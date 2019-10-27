@@ -41,14 +41,31 @@ public class RobotOnFieldVizMain extends Application {
     ///////////////////////////////////////////////////////////////////
 
     public static int ARRAY_SIZE = 300;
-    public static ArrayList<RobotVizCode.RobotLocation> robot1Points = new ArrayList<>() ;//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> robot2Points = new ArrayList<>() ;//all the points to display
+
+    public static ArrayList<RobotVizCode.RobotLocation> robot1Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot2Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot3Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot4Points = new ArrayList<>();//all the points to display
+
+    public static ArrayList<RobotVizCode.RobotLocation> BlueFoundationPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStonePoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStonePoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedFoundationPoints = new ArrayList<>();//all the points to display
+
+    public static AccessoryList robot1Acc = new AccessoryList();
+    public static AccessoryList robot2Acc = new AccessoryList();
+    public static AccessoryList robot3Acc = new AccessoryList();
+    public static AccessoryList robot4Acc = new AccessoryList();
+
+    public static ArrayList<RobotVizCode.RobotLocation> robot1Gripper = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot2Gripper = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot3Gripper = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot4Gripper = new ArrayList<>();//all the points to display
+
+
 
     public static ArrayList<RobotVizCode.DefineLine> displayLines = new ArrayList<>();//all the lines to display
     public static int counter = 0;
-
-
-
 
     public static Semaphore drawSemaphore = new Semaphore(1);
 
@@ -119,16 +136,19 @@ public class RobotOnFieldVizMain extends Application {
         ImageView logImageView = new ImageView();
         logImageView.setImage(logImage);//set the image
 
-        logImageView.setFitHeight(logImage.getHeight()/1.6);//was 2.5
+        logImageView.setFitHeight(logImage.getHeight()/1.25);//was 2.5
         logImageView.setFitWidth(logImage.getWidth()/1.6);//was 2.5
 
-        logGroup.setTranslateY(100);//was 10
+
+        logGroup.setTranslateY(240);//was 10 or 100
+        logGroup.setTranslateX(285);//was not defined, use 0 for LH side, 550 for RH side
+
         //add the background image
         logGroup.getChildren().add(logImageView);
 
 
         Label robotCoordsLabel = new Label();
-        robotCoordsLabel.setFont(new Font("Arial",14));
+        robotCoordsLabel.setFont(new Font("Arial",12));
         robotCoordsLabel.textFillProperty().setValue(new Color(0,0.2,1.0,1));
         robotCoordsLabel.setPrefWidth(logImageView.getFitWidth()-25);//was setPrefWidth(logImageView.getFitWidth()-25)
 
@@ -157,18 +177,46 @@ public class RobotOnFieldVizMain extends Application {
         new AnimationTimer() {
             @Override public void handle(long currentNanoTime) {
                 try {
+                    //Load data on initial pass
                     if(counter == 0) {
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.dat"));
+                        robot1Acc = ReadAccessories.readAcc("Robot1Accessories.dat");
+                        robot1Gripper.clear();
+                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.dat"));
+
                         robot2Points.clear();
                         robot2Points.addAll(roboRead.readData("Robot2OnField.dat"));
+                        robot2Acc = ReadAccessories.readAcc("Robot2Accessories.dat");
+                        robot2Gripper.clear();
+                        robot2Gripper.addAll(roboRead.readData("Robot2Gripper.dat"));
+
+                        robot3Points.clear();
+                        robot3Points.addAll(roboRead.readData("Robot3OnField.dat"));
+                        robot3Acc = ReadAccessories.readAcc("Robot3Accessories.dat");
+                        robot3Gripper.clear();
+                        robot3Gripper.addAll(roboRead.readData("Robot3Gripper.dat"));
+
+                        robot4Points.clear();
+                        robot4Points.addAll(roboRead.readData("Robot4OnField.dat"));
+                        robot4Acc = ReadAccessories.readAcc("Robot4Accessories.dat");
+                        robot4Gripper.clear();
+                        robot4Gripper.addAll(roboRead.readData("Robot4Gripper.dat"));
+
+                        RedFoundationPoints.clear();
+                        RedFoundationPoints.addAll(roboRead.readData("RedFoundation.dat"));
+                        BlueFoundationPoints.clear();
+                        BlueFoundationPoints.addAll(roboRead.readData("BlueFoundation.dat"));
+                        BlueSkyStonePoints.clear();
+                        BlueSkyStonePoints.addAll(roboRead.readData("BlueSkyStone.dat"));
+                        RedSkyStonePoints.clear();
+                        RedSkyStonePoints.addAll(roboRead.readData("RedSkyStone.dat"));
                     }
                     //acquire the drawing semaphore
                     drawSemaphore.acquire();
 
                     //set the width and height
-                    FieldToScreen.setDimensionsPixels(scene.getWidth(),
-                            scene.getHeight());
+                    FieldToScreen.setDimensionsPixels(scene.getWidth(),scene.getHeight());
                     fieldCanvas.setWidth(FieldToScreen.getFieldSizePixels());
                     fieldCanvas.setHeight(FieldToScreen.getFieldSizePixels());
 
@@ -181,17 +229,24 @@ public class RobotOnFieldVizMain extends Application {
 
                     drawScreen(gc);
                     robotCoordsLabel.setText("COORDINATES:"+
-                            String.format("\n\nX1: %.2f  |  X2: %.2f", robot1Points.get(counter).x,robot2Points.get(counter).x)+
+                            String.format("\n\nBlue Alliance:")+
+                            String.format("\nX1: %.2f  |  X2: %.2f", robot1Points.get(counter).x,robot2Points.get(counter).x)+
                             String.format("\nY1: %.2f  |  Y2: %.2f", robot1Points.get(counter).y,robot2Points.get(counter).y) +
                             String.format("\nAng1:%.1f°  |  Ang2:%.1f°",Math.toDegrees(robot1Points.get(counter).theta),Math.toDegrees(robot2Points.get(counter).theta)) +
+                            String.format("\n\nRed Alliance:")+
+                            String.format("\nX3: %.2f  |  X4: %.2f", robot3Points.get(counter).x,robot4Points.get(counter).x)+
+                            String.format("\nY3: %.2f  |  Y4: %.2f", robot3Points.get(counter).y,robot4Points.get(counter).y) +
+                            String.format("\nAng3:%.1f°  |  Ang4:%.1f°",Math.toDegrees(robot3Points.get(counter).theta),Math.toDegrees(robot4Points.get(counter).theta)) +
                             String.format("\ncounter: %d",counter));
+
                     System.out.println(primaryStage.getWidth());
 //                    System.out.println(String.format("counter value: %d",counter));
 //                    gc.setLineWidth(10);
 //                    buildPoints();
 
 
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 drawSemaphore.release();
@@ -211,26 +266,79 @@ public class RobotOnFieldVizMain extends Application {
 //        gc.fillRect(0,0,Screen.widthScreen,Screen.heightScreen);
 
         //then draw the robot
-//        DefinePoint center = drawRobot(gc);
-//        followRobot(center.x,center.y);
         //Alternate robot draw option for multi-robots
-//        DefinePoint robot1Center = DrawRobots.drawImage(gc, robot1Points.get(counter),"SimpleRobot1.png");
-        DefinePoint robot1Center = DrawRobots.drawImage(gc, robot1Points.get(counter),"NewRobot1.png");
 
+        DefinePoint robot1Center = DrawObjects.drawImage(gc, robot1Points.get(counter), 18, 18,"NewRobot1.png");
         followRobot(robot1Center.x,robot1Center.y);
 
-        RobotLocation rb2 = new RobotLocation(60,36,180);
-//        DefinePoint robot2Center = DrawRobots.drawImage(gc,robot2Points.get(counter),"robot.png");
-        DefinePoint robot2Center = DrawRobots.drawImage(gc,robot2Points.get(counter),"NewRobot2.png");
+        if(robot1Acc.jackDir[counter]==1){
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"UpArrow.png");
+        }
+        else if(robot1Acc.jackDir[counter]==-1){
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"DownArrow.png");
+        }
 
+        DefinePoint robot2Center = DrawObjects.drawImage(gc,robot2Points.get(counter),18,18,"NewRobot2.png");
         followRobot(robot2Center.x,robot2Center.y);
+
+        if(robot2Acc.jackDir[counter]==1){
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 9, 9,"UpArrow.png");
+        }
+        else if(robot2Acc.jackDir[counter]==-1){
+            DefinePoint robot2Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 9, 9,"DownArrow.png");
+        }
+
+        DefinePoint BlueFoundCenter = DrawObjects.drawImage(gc, BlueFoundationPoints.get(counter),18.5, 34.5,"BlueFoundation.png");
+        followRobot(BlueFoundCenter.x,BlueFoundCenter.y);
+
+        DefinePoint BlueStoneCenter = DrawObjects.drawImage(gc, BlueSkyStonePoints.get(counter),4,8,"BlueStone.png");
+        followRobot(BlueStoneCenter.x,BlueStoneCenter.y);
+
+        DefinePoint robot1G = DrawObjects.drawImage(gc, robot1Gripper.get(counter), 5, robot1Acc.gripperWidth[counter],"Gripper.png");
+
+        DefinePoint robot2G = DrawObjects.drawImage(gc, robot2Gripper.get(counter), 5, robot2Acc.gripperWidth[counter],"Gripper.png");
+
+        DefinePoint robot3Center = DrawObjects.drawImage(gc, robot3Points.get(counter), 18, 18,"RedRobot1.png");
+        followRobot(robot3Center.x,robot3Center.y);
+
+        if(robot3Acc.jackDir[counter]==1){
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot3Points.get(counter), 9, 9,"UpArrow.png");
+        }
+        else if(robot3Acc.jackDir[counter]==-1){
+            DefinePoint robot3Jack = DrawObjects.drawImage(gc, robot3Points.get(counter), 9, 9,"DownArrow.png");
+        }
+
+        DefinePoint robot4Center = DrawObjects.drawImage(gc, robot4Points.get(counter), 18, 18,"RedRobot2.png");
+        followRobot(robot4Center.x,robot4Center.y);
+
+        if(robot4Acc.jackDir[counter]==1){
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot4Points.get(counter), 9, 9,"UpArrow.png");
+        }
+        else if(robot4Acc.jackDir[counter]==-1){
+            DefinePoint robot4Jack = DrawObjects.drawImage(gc, robot4Points.get(counter), 9, 9,"DownArrow.png");
+        }
+
+        DefinePoint RedFoundCenter = DrawObjects.drawImage(gc, RedFoundationPoints.get(counter),18.5, 34.5,"RedFoundation.png");
+        followRobot(RedFoundCenter.x,RedFoundCenter.y);
+
+        DefinePoint RedStoneCenter = DrawObjects.drawImage(gc, RedSkyStonePoints.get(counter),4,8,"RedStone.png");
+        followRobot(RedStoneCenter.x,RedStoneCenter.y);
+
+        DefinePoint robot3G = DrawObjects.drawImage(gc, robot3Gripper.get(counter), 5, robot3Acc.gripperWidth[counter],"Gripper.png");
+
+        DefinePoint robot4G = DrawObjects.drawImage(gc, robot4Gripper.get(counter), 5, robot4Acc.gripperWidth[counter],"Gripper.png");
         //draw all the lines and points retrieved from the phone
 
 //        drawDebugPoints(gc);
-        double[] colors1 = {1, 0};
-        double[] colors2 = {0, 0.25};
+        double[] colors1 = {0.3, 1.0};
+        double[] colors2 = {0.4, 0.9};
+        double[] colors3 = {1, 0};
+        double[] colors4 = {0.9, 0.0};
+//        robotCoordsLabel.textFillProperty().setValue(new Color(0.4,0.9,1,1));
         DrawPoints.drawPoints(gc, counter, robot1Points,colors1);
         DrawPoints.drawPoints(gc, counter, robot2Points,colors2);
+        DrawPoints.drawPoints(gc, counter, robot3Points,colors3);
+        DrawPoints.drawPoints(gc, counter, robot4Points,colors4);
 //        drawDebugLines(gc);
 
 
@@ -240,75 +348,12 @@ public class RobotOnFieldVizMain extends Application {
         }
         try{
             Thread.sleep(50);//(was 50)This can slow down the time between points and therefore the robot speed
-        }catch (InterruptedException e){
+        }
+        catch (InterruptedException e){
             e.printStackTrace();
         }
     }
 
-//    public void gatherData(GraphicsContext gc){
-//        double robotX = robot1Points.get(counter).x;
-//        double robotY = robot1Points.get(counter).y;
-//        double robotAngle = counter/ARRAY_SIZE * 45;
-//    }
-
-//    private void buildPoints(){
-//
-//        for(int i =0; i < ARRAY_SIZE; i ++){
-//            robot1Points.add(i, new RobotLocation(counter*2, counter/2, counter/ARRAY_SIZE * 45));
-//        }
-//    }
-
-//
-//
-//
-//    private void drawDebugPoints(GraphicsContext gc) {
-//
-//
-//        for(int i =0; i < counter; i ++){
-//
-//            DefinePoint displayLocation = TestScreen.convertToScreenPoint(
-//                    new DefinePoint((12*12)/2+ robot1Points.get(i).x, (12*12)/2+ robot1Points.get(i).y));
-//            double radius = 5;
-////            gc.setStroke(new Color(i/displayPoints.size() ,0.1,0.5,0.8));
-////            gc.strokeOval(displayLocation.x-radius,displayLocation.y-radius,2*radius,2*radius);
-//            double colorValue = (double)i/(double) robot1Points.size();
-//            gc.setFill(new Color(1.0 ,colorValue,0.0,0.8));
-//            gc.fillOval(displayLocation.x-radius,displayLocation.y-radius,2*radius,2*radius);
-////            System.out.println(String.format("writing oval number %d @ location (%.2f,%.2f), color = %.3f",i,displayLocation.x-radius,displayLocation.y-radius,colorValue));
-//
-//        }
-//
-//
-////        for(int i = 0; i < MessageProcessing.pointLog.size(); i ++){
-////            DefinePoint displayLocation = convertToScreenPoint(
-////                    new DefinePoint(MessageProcessing.pointLog.get(i).x,
-////                            MessageProcessing.pointLog.get(i).y));
-////            double radius = 10;
-//////            gc.setFill(new Color(0.0,0+ (double) i/MessageProcessing.pointLog.size(),0,0.9));
-////            gc.setFill(new Color(0.0+ (double) i/ MessageProcessing.pointLog.size(),0.9,0.1,0.9));
-////            gc.fillOval(displayLocation.x-radius,displayLocation.y-radius,2*radius,2*radius);
-////
-////        }
-//
-//
-//    }
-//    private void drawDebugLines(GraphicsContext gc) {
-//        for(int i =0; i < displayLines.size(); i ++){
-//            DefinePoint displayLocation1 = TestScreen.convertToScreenPoint(
-//                    new DefinePoint(displayLines.get(i).x1, displayLines.get(i).y1));
-//            DefinePoint displayLocation2 = TestScreen.convertToScreenPoint(
-//                    new DefinePoint(displayLines.get(i).x2, displayLines.get(i).y2));
-//
-//
-//            gc.setLineWidth(3);
-//            gc.setStroke(new Color(0.0,1.0,1.0,0.6));
-//
-//
-//            gc.strokeLine(displayLocation1.x,displayLocation1.y,displayLocation2.x,displayLocation2.y);
-//        }
-//    }
-//
-//
 
     /**
      * This will move the background image and everything else to follow the robot
@@ -332,75 +377,11 @@ public class RobotOnFieldVizMain extends Application {
         fieldBackgroundImageView.setY(originInPixels.y);
     }
 
-
-
-
 //    //the last position of the robot
 //    double lastRobotX = 0;
 //    double lastRobotY = 0;
 //    double lastRobotAngle = 0;
 
-    /**
-     * Draws the robot
-     * @param gc the graphics context
-     */
-//    private DefinePoint drawRobot(GraphicsContext gc) {
-//        //robot radius is half the diagonal length
-//        double robotRadius = Math.sqrt(2) * 18.0/ 2.0;//update units to inches for 18" square
-//
-////        double robotX = MessageProcessing.getInterpolatedRobotX();
-////        double robotY = MessageProcessing.getInterpolatedRobotY();
-////        double robotAngle = MessageProcessing.getInterpolatedRobotAngle();
-//        double robotX = (12*12/2)+ robot1Points.get(counter).x;//set robot (0,0) form data at field center
-//        double robotY = (12*12/2)+ robot1Points.get(counter).y;//set robot (0,0) form data at field center
-//        double robotAngle = Math.toRadians(90) + robot1Points.get(counter).theta;//Need to add 90 degrees = maybe be for reference EAST vs SOUTH
-////        followRobot(robotX,robotY);
-//        DefinePoint robotCenter = new DefinePoint(robotX,robotY);
-//
-//
-//        double topLeftX = robotX + (robotRadius * (Math.cos(robotAngle+ Math.toRadians(45))));
-//        double topLeftY = robotY + (robotRadius * (Math.sin(robotAngle+ Math.toRadians(45))));
-//        double topRightX = robotX + (robotRadius * (Math.cos(robotAngle- Math.toRadians(45))));
-//        double topRightY = robotY + (robotRadius * (Math.sin(robotAngle- Math.toRadians(45))));
-//        double bottomLeftX = robotX + (robotRadius * (Math.cos(robotAngle+ Math.toRadians(135))));
-//        double bottomLeftY = robotY + (robotRadius * (Math.sin(robotAngle+ Math.toRadians(135))));
-//        double bottomRightX = robotX + (robotRadius * (Math.cos(robotAngle- Math.toRadians(135))));
-//        double bottomRightY = robotY + (robotRadius * (Math.sin(robotAngle- Math.toRadians(135))));
-//
-//        Color c = Color.color(1.0,1.0,0.0);
-//        //draw the points
-////        drawLineField(gc,topLeftX, topLeftY, topRightX, topRightY,c);
-////        drawLineField(gc,topRightX, topRightY, bottomRightX, bottomRightY,c);
-////        drawLineField(gc,bottomRightX, bottomRightY, bottomLeftX, bottomLeftY,c);
-////        drawLineField(gc,bottomLeftX, bottomLeftY, topLeftX, topLeftY,c);
-////
-//
-//        try {
-//            DefinePoint bottomLeft = TestScreen.convertToScreenPoint(new DefinePoint(topLeftX,topLeftY));
-//            double width = 18/ TestScreen.getInchesPerPixel();//calculate the width of the image in pixels (in inches)
-//
-//            gc.save();//save the gc
-//            gc.transform(new Affine(new Rotate(Math.toDegrees(-robotAngle)+90, bottomLeft.x, bottomLeft.y)));//Need to add 90 degrees = maybe be for reference EAST vs SOUTH
-////            Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/robot.png"));
-//            Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/SimpleRobot1.png"));
-//            gc.drawImage(image,bottomLeft.x, bottomLeft.y,width,width);
-//
-//
-//            gc.restore();
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return robotCenter;
-//    }
-//
-//    public void drawLineField(GraphicsContext gc,double x1, double y1, double x2, double y2,Color color){
-//        DefinePoint first = TestScreen.convertToScreenPoint(new DefinePoint(x1,y1));
-//        DefinePoint second = TestScreen.convertToScreenPoint(new DefinePoint(x2,y2));
-//        gc.setStroke(color);
-//        gc.strokeLine(first.x,first.y,second.x,second.y);
-//        gc.setStroke(Color.BLACK);
-//    }
-//
+
 
 }
