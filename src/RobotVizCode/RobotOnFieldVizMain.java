@@ -102,7 +102,7 @@ public class RobotOnFieldVizMain extends Application {
         mainHBox.prefHeightProperty().bind(primaryStage.heightProperty());
 
         ///////////////////////////////////Setup the background image/////////////////////////////////
-        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/SkyStoneFieldStones.png"));
+        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/FieldNoFoundations2.png"));
 //        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/field dark.png"));
 
         fieldBackgroundImageView = new ImageView();
