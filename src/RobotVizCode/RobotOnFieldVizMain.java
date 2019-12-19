@@ -48,8 +48,10 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> robot4Points = new ArrayList<>();//all the points to display
 
     public static ArrayList<RobotVizCode.RobotLocation> BlueFoundationPoints = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStonePoints = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStonePoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone1Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone2Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStone1Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStone2Points = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> RedFoundationPoints = new ArrayList<>();//all the points to display
 
     public static AccessoryList robot1Acc = new AccessoryList();
@@ -180,37 +182,42 @@ public class RobotOnFieldVizMain extends Application {
                     //Load data on initial pass
                     if(counter == 0) {
                         robot1Points.clear();
-                        robot1Points.addAll(roboRead.readData("Robot1OnField.dat"));
-                        robot1Acc = ReadAccessories.readAcc("Robot1Accessories.dat");
+                        robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
+                        robot1Acc = ReadAccessories.readAcc("Robot1Accessories.txt");
                         robot1Gripper.clear();
-                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.dat"));
+                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
 
                         robot2Points.clear();
-                        robot2Points.addAll(roboRead.readData("Robot2OnField.dat"));
-                        robot2Acc = ReadAccessories.readAcc("Robot2Accessories.dat");
+                        robot2Points.addAll(roboRead.readData("Robot2OnField.txt"));
+                        robot2Acc = ReadAccessories.readAcc("Robot2Accessories.txt");
                         robot2Gripper.clear();
-                        robot2Gripper.addAll(roboRead.readData("Robot2Gripper.dat"));
+                        robot2Gripper.addAll(roboRead.readData("Robot2Gripper.txt"));
 
                         robot3Points.clear();
-                        robot3Points.addAll(roboRead.readData("Robot3OnField.dat"));
-                        robot3Acc = ReadAccessories.readAcc("Robot3Accessories.dat");
+                        robot3Points.addAll(roboRead.readData("Robot3OnField.txt"));
+                        robot3Acc = ReadAccessories.readAcc("Robot3Accessories.txt");
                         robot3Gripper.clear();
-                        robot3Gripper.addAll(roboRead.readData("Robot3Gripper.dat"));
+                        robot3Gripper.addAll(roboRead.readData("Robot3Gripper.txt"));
 
                         robot4Points.clear();
-                        robot4Points.addAll(roboRead.readData("Robot4OnField.dat"));
-                        robot4Acc = ReadAccessories.readAcc("Robot4Accessories.dat");
+                        robot4Points.addAll(roboRead.readData("Robot4OnField.txt"));
+                        robot4Acc = ReadAccessories.readAcc("Robot4Accessories.txt");
                         robot4Gripper.clear();
-                        robot4Gripper.addAll(roboRead.readData("Robot4Gripper.dat"));
+                        robot4Gripper.addAll(roboRead.readData("Robot4Gripper.txt"));
 
                         RedFoundationPoints.clear();
-                        RedFoundationPoints.addAll(roboRead.readData("RedFoundation.dat"));
+                        RedFoundationPoints.addAll(roboRead.readData("RedFoundation.txt"));
                         BlueFoundationPoints.clear();
-                        BlueFoundationPoints.addAll(roboRead.readData("BlueFoundation.dat"));
-                        BlueSkyStonePoints.clear();
-                        BlueSkyStonePoints.addAll(roboRead.readData("BlueSkyStone.dat"));
-                        RedSkyStonePoints.clear();
-                        RedSkyStonePoints.addAll(roboRead.readData("RedSkyStone.dat"));
+                        BlueFoundationPoints.addAll(roboRead.readData("BlueFoundation.txt"));
+                        BlueSkyStone1Points.clear();
+                        BlueSkyStone1Points.addAll(roboRead.readData("BlueSkyStone1.txt"));
+                        BlueSkyStone2Points.clear();
+                        BlueSkyStone2Points.addAll(roboRead.readData("BlueSkyStone2.txt"));
+                        RedSkyStone1Points.clear();
+                        RedSkyStone1Points.addAll(roboRead.readData("RedSkyStone1.txt"));
+                        RedSkyStone2Points.clear();
+                        RedSkyStone2Points.addAll(roboRead.readData("RedSkyStone2.txt"));
+
                     }
                     //acquire the drawing semaphore
                     drawSemaphore.acquire();
@@ -291,8 +298,10 @@ public class RobotOnFieldVizMain extends Application {
         DefinePoint BlueFoundCenter = DrawObjects.drawImage(gc, BlueFoundationPoints.get(counter),18.5, 34.5,"BlueFoundation.png");
         followRobot(BlueFoundCenter.x,BlueFoundCenter.y);
 
-        DefinePoint BlueStoneCenter = DrawObjects.drawImage(gc, BlueSkyStonePoints.get(counter),4,8,"BlueStone.png");
-        followRobot(BlueStoneCenter.x,BlueStoneCenter.y);
+        DefinePoint BlueStone1Center = DrawObjects.drawImage(gc, BlueSkyStone1Points.get(counter),4,8,"BlueStone.png");
+        followRobot(BlueStone1Center.x,BlueStone1Center.y);
+        DefinePoint BlueStone2Center = DrawObjects.drawImage(gc, BlueSkyStone2Points.get(counter),4,8,"BlueStone.png");
+        followRobot(BlueStone2Center.x,BlueStone2Center.y);
 
         DefinePoint robot1G = DrawObjects.drawImage(gc, robot1Gripper.get(counter), 5, robot1Acc.gripperWidth[counter],"Gripper.png");
 
@@ -321,8 +330,10 @@ public class RobotOnFieldVizMain extends Application {
         DefinePoint RedFoundCenter = DrawObjects.drawImage(gc, RedFoundationPoints.get(counter),18.5, 34.5,"RedFoundation.png");
         followRobot(RedFoundCenter.x,RedFoundCenter.y);
 
-        DefinePoint RedStoneCenter = DrawObjects.drawImage(gc, RedSkyStonePoints.get(counter),4,8,"RedStone.png");
-        followRobot(RedStoneCenter.x,RedStoneCenter.y);
+        DefinePoint RedStone1Center = DrawObjects.drawImage(gc, RedSkyStone1Points.get(counter),4,8,"RedStone.png");
+        followRobot(RedStone1Center.x,RedStone1Center.y);
+        DefinePoint RedStone2Center = DrawObjects.drawImage(gc, RedSkyStone2Points.get(counter),4,8,"RedStone.png");
+        followRobot(RedStone2Center.x,RedStone2Center.y);
 
         DefinePoint robot3G = DrawObjects.drawImage(gc, robot3Gripper.get(counter), 5, robot3Acc.gripperWidth[counter],"Gripper.png");
 
@@ -346,12 +357,13 @@ public class RobotOnFieldVizMain extends Application {
         if(counter > (ARRAY_SIZE - 1)) {
             counter = 0;
         }
-        try{
-            Thread.sleep(50);//(was 50)This can slow down the time between points and therefore the robot speed
-        }
-        catch (InterruptedException e){
-            e.printStackTrace();
-        }
+//        try{
+//            Thread.sleep(5);//(was 50)This can slow down the time between points and therefore the robot speed
+//            //WIth 4 robots this may not be necessary because of processing time for each step
+//        }
+//        catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
     }
 
 
