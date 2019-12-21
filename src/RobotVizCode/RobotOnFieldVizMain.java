@@ -279,11 +279,16 @@ public class RobotOnFieldVizMain extends Application {
         followRobot(robot1Center.x,robot1Center.y);
 
         if(robot1Acc.jackDir[counter]==1){
-            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"UpArrow.png");
+            DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"UpArrow.png");
         }
         else if(robot1Acc.jackDir[counter]==-1){
-            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"DownArrow.png");
+            DrawObjects.drawImage(gc, robot1Points.get(counter), 9, 9,"DownArrow.png");
         }
+        double[] robot1ServoData = defineServo(robot1Points.get(counter),robot1Acc);
+        DefinePoint robot1BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0],robot1ServoData[1],robot1ServoData[2]),
+                1.5,robot1ServoData[3],"ServoArm.png");
+        DefinePoint robot1RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0],robot1ServoData[1],robot1ServoData[2]),
+                1.5,robot1ServoData[3],"ServoArm.png");
 
         DefinePoint robot2Center = DrawObjects.drawImage(gc,robot2Points.get(counter),18,18,"NewRobot2.png");
         followRobot(robot2Center.x,robot2Center.y);
@@ -294,6 +299,15 @@ public class RobotOnFieldVizMain extends Application {
         else if(robot2Acc.jackDir[counter]==-1){
             DefinePoint robot2Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 9, 9,"DownArrow.png");
         }
+        double[] robot2ServoData = defineServo(robot2Points.get(counter),robot2Acc);
+        DefinePoint robot2BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[0],robot2ServoData[1],robot2ServoData[2]),
+                1.5,robot2ServoData[3],"ServoArm.png");
+
+        DefinePoint robot2RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[4],robot2ServoData[5],robot2ServoData[6]),
+                1.5, robot2ServoData[7], "ServoArm.png");
+
+
+
 
         DefinePoint BlueFoundCenter = DrawObjects.drawImage(gc, BlueFoundationPoints.get(counter),18.5, 34.5,"BlueFoundation.png");
         followRobot(BlueFoundCenter.x,BlueFoundCenter.y);
@@ -316,6 +330,11 @@ public class RobotOnFieldVizMain extends Application {
         else if(robot3Acc.jackDir[counter]==-1){
             DefinePoint robot3Jack = DrawObjects.drawImage(gc, robot3Points.get(counter), 9, 9,"DownArrow.png");
         }
+        double[] robot3ServoData = defineServo(robot3Points.get(counter),robot3Acc);
+        DefinePoint robot3BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot3ServoData[0],robot3ServoData[1],robot3ServoData[2]),
+                1.5,robot3ServoData[3],"ServoArm.png");
+        DefinePoint robot3RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot3ServoData[4],robot3ServoData[5],robot3ServoData[6]),
+                1.5, robot3ServoData[7], "ServoArm.png");
 
         DefinePoint robot4Center = DrawObjects.drawImage(gc, robot4Points.get(counter), 18, 18,"RedRobot2.png");
         followRobot(robot4Center.x,robot4Center.y);
@@ -326,6 +345,11 @@ public class RobotOnFieldVizMain extends Application {
         else if(robot4Acc.jackDir[counter]==-1){
             DefinePoint robot4Jack = DrawObjects.drawImage(gc, robot4Points.get(counter), 9, 9,"DownArrow.png");
         }
+        double[] robot4ServoData = defineServo(robot4Points.get(counter),robot4Acc);
+        DefinePoint robot4BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot4ServoData[0],robot4ServoData[1],robot4ServoData[2]),
+                1.5,robot4ServoData[3],"ServoArm.png");
+        DefinePoint robot4RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot4ServoData[4],robot4ServoData[5],robot4ServoData[6]),
+                1.5, robot4ServoData[7], "ServoArm.png");
 
         DefinePoint RedFoundCenter = DrawObjects.drawImage(gc, RedFoundationPoints.get(counter),18.5, 34.5,"RedFoundation.png");
         followRobot(RedFoundCenter.x,RedFoundCenter.y);
@@ -388,11 +412,28 @@ public class RobotOnFieldVizMain extends Application {
         fieldBackgroundImageView.setX(originInPixels.x);
         fieldBackgroundImageView.setY(originInPixels.y);
     }
+    private double[] defineServo(RobotLocation robot, AccessoryList accList){
+        double length = 9;
+        double[] returnData = new double[8];
 
-//    //the last position of the robot
-//    double lastRobotX = 0;
-//    double lastRobotY = 0;
-//    double lastRobotAngle = 0;
+        double theta = robot.theta;
+        //Blue Servo
+        returnData[3] =length * accList.blueStoneServo[counter]; //length of servo
+        double deltaX = -2;//distance to servo center from robot center
+        double deltaY = -6-returnData[4]; //distance to servo center from robot center, must include servo length
+        returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//servo arm X location on field
+        returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//servo arm Y location on field
+        returnData[2] = theta; //servo arm angle on field
+        //Red Servo
+        deltaX = -2;
+        returnData[7] =length * accList.redStoneServo[counter]; //length of servo
+        deltaY = returnData[7]; //distance to servo center from robot center, must include servo length
+        returnData[4] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//servo arm X location on field
+        returnData[5] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//servo arm Y location on field
+        returnData[6] = theta; //servo arm angle on field
+
+        return returnData;//blue x,y,theta, length, then red x,y,theta, length
+    }
 
 
 
