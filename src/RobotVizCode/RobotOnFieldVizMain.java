@@ -167,8 +167,8 @@ public class RobotOnFieldVizMain extends Application {
         rootGroup.getChildren().add(mainHBox);
         scene.setFill(Color.BLUE);//we'll be black (9)now blue)
         primaryStage.setScene(scene);//set the primary stage's scene
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(800);
+        primaryStage.setWidth(670);// was 800
+        primaryStage.setHeight(670);// was 800
         primaryStage.setMaximized(false);
 
         //show the primaryStage
@@ -382,7 +382,7 @@ public class RobotOnFieldVizMain extends Application {
             counter = 0;
         }
 //        try{
-//            Thread.sleep(5);//(was 50)This can slow down the time between points and therefore the robot speed
+//            Thread.sleep(50);//(was 50)This can slow down the time between points and therefore the robot speed
 //            //WIth 4 robots this may not be necessary because of processing time for each step
 //        }
 //        catch (InterruptedException e){
