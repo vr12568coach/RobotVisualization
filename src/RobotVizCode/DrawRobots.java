@@ -58,7 +58,7 @@ public class DrawRobots {
 
         try {
             DefinePoint bottomLeft = FieldToScreen.convertToScreenPoint(new DefinePoint(topLeftX,topLeftY));
-            double width = 18/ FieldToScreen.getInchesPerPixel();//calculate the width of the image in pixels (in inches)
+            double width = 18/ FieldToScreen.getInchesPerPixelWidth();//calculate the width of the image in pixels (in inches)
 
             gc.save();//save the gc
             gc.transform(new Affine(new Rotate(Math.toDegrees(-robotAngle)+90, bottomLeft.x, bottomLeft.y)));//Need to add 90 degrees = maybe be for reference EAST vs SOUTH

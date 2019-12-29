@@ -18,8 +18,8 @@ public class FieldToScreen {
 
 
     //These are the SCREEN dimensions
-    public static double widthScreen = 1000;
-    public static double heightScreen = 1000;
+    public static double widthScreen = 800;//was 1000
+    public static double heightScreen = 800;//was 1000
 
 
     //Increasing this makes the width and height in real scale smaller since it is zooming in
@@ -90,7 +90,7 @@ public class FieldToScreen {
      */
     private static DefinePoint getWindowSizeInRealScale(){
         //now we can return size in real scale by multiplying the screen sizes by the screen pixel sizes
-        return new DefinePoint(widthScreen * getInchesPerPixel(),heightScreen * getInchesPerPixel());
+        return new DefinePoint(widthScreen * getInchesPerPixelWidth(),heightScreen * getInchesPerPixelHeight());
     }
 
 
@@ -107,10 +107,15 @@ public class FieldToScreen {
      * Gets how many centimeters are in each pixel of the screen
      * @return
      */
-    public static double getInchesPerPixel(){
+    public static double getInchesPerPixelWidth(){
         //Get the conversion of centimeters per pixel. This is the size in inches of the biggest dimension
         //divided by the size in pixels of the biggest dimension
-        return ACTUAL_FIELD_SIZE/getFieldSizePixels();
+        return ACTUAL_FIELD_SIZE/ getFieldWidthPixels();
+    }
+    public static double getInchesPerPixelHeight(){
+        //Get the conversion of centimeters per pixel. This is the size in inches of the biggest dimension
+        //divided by the size in pixels of the biggest dimension
+        return ACTUAL_FIELD_SIZE/ getFieldHeightPixels();
     }
 
 
@@ -118,10 +123,11 @@ public class FieldToScreen {
      * Gets the field size in pixels
      * @return the field size in pixels
      */
-    public static double getFieldSizePixels(){
-        //get the biggest dimension if it is the width or the height
-        double biggestWindowDimensionPixels = heightScreen > widthScreen ? heightScreen : widthScreen;
-        return biggestWindowDimensionPixels/zoomPercent;
+    public static double getFieldWidthPixels(){
+        return widthScreen/zoomPercent;
+    }
+    public static double getFieldHeightPixels(){
+        return heightScreen/zoomPercent;
     }
 
 }

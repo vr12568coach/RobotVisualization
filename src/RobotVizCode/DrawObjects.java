@@ -46,8 +46,8 @@ public class DrawObjects {
         try {
             DefinePoint bottomLeft = FieldToScreen.convertToScreenPoint(new DefinePoint(bottomLeftX,bottomLeftY));
             //why is the point defined above called bottomLeft when created from topLeft?
-            double width = w/ FieldToScreen.getInchesPerPixel();//calculate the width of the image in pixels (in inches)
-            double height = h/ FieldToScreen.getInchesPerPixel();//calculate the height of the image in pixels (in inches)
+            double width = w/ FieldToScreen.getInchesPerPixelWidth();//calculate the width of the image in pixels (in inches)
+            double height = h/ FieldToScreen.getInchesPerPixelHeight();//calculate the height of the image in pixels (in inches)
 
             gc.save();//save the gc
             gc.transform(new Affine(new Rotate(Math.toDegrees(-objectAngle)+90 , bottomLeft.x, bottomLeft.y)));
