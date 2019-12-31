@@ -90,8 +90,8 @@ public class RobotOnFieldVizMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         //WINDOW STUFF//
         primaryStage.setTitle("Test Robot Plotter");
-        double stageWidth = 960;//User input for the desired size
-        double stageHeight = 983;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
+        double stageWidth = 960;//860;//User input for the desired size
+        double stageHeight = 983;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
 
 
         ////////////////
@@ -265,7 +265,7 @@ public class RobotOnFieldVizMain extends Application {
                             String.format("\nX3: %.2f  |  X4: %.2f", robot3Points.get(counter).x,robot4Points.get(counter).x)+
                             String.format("\nY3: %.2f  |  Y4: %.2f", robot3Points.get(counter).y,robot4Points.get(counter).y) +
                             String.format("\nAng3:%.1f°  |  Ang4:%.1f°",Math.toDegrees(robot3Points.get(counter).theta),Math.toDegrees(robot4Points.get(counter).theta)) +
-                            String.format("\ncounter: %d",counter));
+                            String.format("\nElapsed Time: %.1f",(double)counter/10.0));
 //************ UPDATES FOR WINDOW SIZING OUTPUT ************************************
 
                     System.out.println(String.format("Stage Input W: %.1f, H: %.1f & Current W: %.1f, H: %.1f,",stageWidth,stageHeight,primaryStage.getWidth(),primaryStage.getHeight()));
