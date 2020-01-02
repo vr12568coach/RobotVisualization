@@ -90,8 +90,8 @@ public class RobotOnFieldVizMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         //WINDOW STUFF//
         primaryStage.setTitle("Test Robot Plotter");
-        double stageWidth = 960;//User input for the desired size
-        double stageHeight = 983;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
+        double stageWidth = 760;//User input for the desired size
+        double stageHeight = 680;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
 
 
         ////////////////
