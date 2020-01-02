@@ -76,8 +76,8 @@ public class RobotOnFieldVizMain extends Application {
      * stageHEight is the vertical size
      *
      */
-    public static double stageWidth = 960;//860;//User input for the desired size
-    public static double stageHeight = 983;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
+    public static double stageWidth = 760;//860;//User input for the desired size
+    public static double stageHeight = 680;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
     public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 and 1 = Monitor 2
 
     //Sets the robot image graphics size
@@ -99,6 +99,7 @@ public class RobotOnFieldVizMain extends Application {
     public void start(Stage primaryStage) throws Exception {
 //    public void start(JFrame frame, Stage primaryStage) throws Exception {
         //WINDOW STUFF//
+
         primaryStage.setTitle("Test Robot Visualization");
 
         setDisplay(monitorSelect,primaryStage);
@@ -182,6 +183,7 @@ public class RobotOnFieldVizMain extends Application {
         rootGroup.getChildren().add(mainHBox);
         scene.setFill(Color.AZURE);//set the background color for any of the scene not covered by the background image
         primaryStage.setScene(scene);//set the primary stage's scene
+
         primaryStage.setWidth(stageWidth);//set based on user inputs
         primaryStage.setHeight(stageHeight);//set based on user inputs
         primaryStage.setMaximized(false);//do not start the stage maximized, size controlled by inputs
@@ -418,6 +420,7 @@ public class RobotOnFieldVizMain extends Application {
         if(counter > (ARRAY_SIZE - 1)) {
             counter = 0;
         }
+
         /** COMMENTED SECTION CAN BE USED TO SLOW DOWN GRAPHICS DISPLAY
 
         try{

@@ -1,6 +1,5 @@
 package RobotVizCode;
 
-
 import java.util.ArrayList;
 
 public class RobotLocationReader {
