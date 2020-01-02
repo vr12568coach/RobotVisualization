@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+import java.awt.*;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
@@ -71,7 +71,16 @@ public class RobotOnFieldVizMain extends Application {
 
     static double  standardWidthPixels = 800;//standard width for scaling of window 800
     static double  standardHeightPixels = 800;//standard height for scaling of window 800 or 816 or 823
+    /** SET THE INPUT VALUES FOR THE SIZE AND LOCATION
+     * stageWidth is the horizontal size
+     * stageHEight is the vertical size
+     *
+     */
+    public static double stageWidth = 960;//860;//User input for the desired size
+    public static double stageHeight = 983;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
+    public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 and 1 = Monitor 2
 
+    //Sets the robot image graphics size
     public double robotWidth = 14;//inches across front to back w/o gripper since robots start front to back in X (Width)
     public double robotHeight = 16.25;//inches across wheels
 
@@ -88,17 +97,11 @@ public class RobotOnFieldVizMain extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+//    public void start(JFrame frame, Stage primaryStage) throws Exception {
         //WINDOW STUFF//
-        primaryStage.setTitle("Test Robot Plotter");
-        double stageWidth = 960;//860;//User input for the desired size
-        double stageHeight = 983;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
+        primaryStage.setTitle("Test Robot Visualization");
 
-
-        ////////////////
-//        if((counter == 0 & displayPoints.size() < 1)) {
-//            displayPoints.add(0, new RobotLocation(0, 0, 0));
-//        }
-//        System.out.println(String.format("size of display points: %d, counter value: %d",displayPoints.size(),counter));
+        setDisplay(monitorSelect,primaryStage);
 
         //this is the group that holds everything
         rootGroup = new Group();
@@ -106,10 +109,10 @@ public class RobotOnFieldVizMain extends Application {
         Scene scene = new Scene(rootGroup);
         //Now we can setup the HBox
         mainHBox = new HBox();
-        //bind the main h box width to the primary stage width so that changes with it
+
+        //bind the main hbox width to the primary stage width so that changes with it
         mainHBox.prefWidthProperty().bind(primaryStage.widthProperty());
         mainHBox.prefHeightProperty().bind(primaryStage.heightProperty());
-
 
         ///////////////////////////////////Setup the background image/////////////////////////////////
         Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/FieldNoFoundations4.png"));
@@ -123,38 +126,43 @@ public class RobotOnFieldVizMain extends Application {
 
 
         //Setup the canvas//
-        fieldCanvas = new Canvas(stageWidth,stageHeight);// was primaryStage.getWidth(),primaryStage.getHeight()
+        fieldCanvas = new Canvas(stageWidth,stageHeight);// set to teh user input width
+
         //the GraphicsContext is what we use to draw on the fieldCanvas
         GraphicsContext gc = fieldCanvas.getGraphicsContext2D();
+
         rootGroup.getChildren().add(fieldCanvas);//add the canvas
         ////////////////////
 
         /**
          * We will use a vbox and set it's width to create a spacer in the window
-         * USE THIS TO CHANGE THE SPACING
+         * USE THIS TO CHANGE THE SPACING (KS: not sure what this really does)
          */
 //        VBox debuggingHSpacer = new VBox();
 //        mainHBox.getChildren().add(debuggingHSpacer);
 
-
+        //Create the robot coordinates log display
         Group logGroup = new Group();
         Image logImage = new Image(new FileInputStream(System.getProperty("user.dir") + "/RobotLog3.png"));
 
         ImageView logImageView = new ImageView();
         logImageView.setImage(logImage);//set the image
 
-        logImageView.setFitHeight(270 * stageHeight / standardHeightPixels);//was logImage.getHeight()/1.25
-        logImageView.setFitWidth(200 * stageWidth / standardWidthPixels);//was logImage.getWidth()/1.6
+        logImageView.setFitHeight(270 * stageHeight / standardHeightPixels);//set height based on scaling user input size
+        logImageView.setFitWidth(200 * stageWidth / standardWidthPixels);//set width based on scaling user input size
 
-        logGroup.setTranslateY(10 * stageHeight/ standardHeightPixels);//was 10 or 100
-        //Set so that as stage Width is changed the relative location of the text box is the same
+        /** set location to remain in same position regardless of window size
+         * use 0 for LH side, 285 for center, 550 for RH side
+         * Set so that as logGroup position is changed keeping the relative location of the text box the same
+         */
+        logGroup.setTranslateY(10 * stageHeight/ standardHeightPixels);
         logGroup.setTranslateX(285 * stageWidth / standardWidthPixels);
-        // use 0 for LH side, 285 for center, 550 for RH side
-        //Set so that as stage Width is changed the relative location of the text box is the same
+
 
         //add the background image
         logGroup.getChildren().add(logImageView);
 
+        //Create the labels and test output for the robot coordinates
         Label robotCoordsLabel = new Label();
         robotCoordsLabel.setFont(new Font("Arial",12* stageHeight / standardHeightPixels));
         robotCoordsLabel.textFillProperty().setValue(new Color(0,0.2,1.0,1));
@@ -168,15 +176,15 @@ public class RobotOnFieldVizMain extends Application {
         logGroup.getChildren().add(robotCoordsLabel);
 
         mainHBox.getChildren().add(logGroup);//add the log group
-
+        //appears that items needed to be added from the background or lower levels first and last is the top level group
 
         //now we can add the mainHBox to the root group
         rootGroup.getChildren().add(mainHBox);
-        scene.setFill(Color.BLUE);//background color is blue)
+        scene.setFill(Color.AZURE);//set the background color for any of the scene not covered by the background image
         primaryStage.setScene(scene);//set the primary stage's scene
-        primaryStage.setWidth(stageWidth);
-        primaryStage.setHeight(stageHeight);
-        primaryStage.setMaximized(false);
+        primaryStage.setWidth(stageWidth);//set based on user inputs
+        primaryStage.setHeight(stageHeight);//set based on user inputs
+        primaryStage.setMaximized(false);//do not start the stage maximized, size controlled by inputs
 
         //show the primaryStage
         primaryStage.show();
@@ -188,6 +196,9 @@ public class RobotOnFieldVizMain extends Application {
                 try {
                     //Load data on initial pass
                     if(counter == 0) {
+                        /**should look to make a method to simplify and reduce the lines of code
+                         *
+                         */
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
                         robot1Acc = ReadAccessories.readAcc("Robot1Accessories.txt");
@@ -226,7 +237,9 @@ public class RobotOnFieldVizMain extends Application {
                         RedSkyStone2Points.addAll(roboRead.readData("RedSkyStone2.txt"));
 
                     }
-                    //acquire the drawing semaphore
+                    /**acquire the drawing semaphore
+                     * should learn more about this aspect of the graphics
+                     */
                     drawSemaphore.acquire();
 
                     //set the width and height
@@ -242,8 +255,11 @@ public class RobotOnFieldVizMain extends Application {
 
                     robotCoordsLabel.setMaxWidth(scene.getWidth() * 0.5);
 //************ UPDATES FOR WINDOW SIZING ************************************
-//                    fieldBackgroundImageView.setTranslateX(-3* scene.getWidth()/standardWidthPixels);
-//                    fieldBackgroundImageView.setTranslateY(-4* scene.getHeight()/standardHeightPixels);
+                    /** optinal code for moving the background image within the scene
+                     * fieldBackgroundImageView.setTranslateX(-3* scene.getWidth()/standardWidthPixels);
+                     * fieldBackgroundImageView.setTranslateY(-4* scene.getHeight()/standardHeightPixels);
+                     *
+                     */
                     logImageView.setFitHeight(270 * scene.getHeight() / standardHeightPixels);//was logImage.getHeight()/1.25
                     logImageView.setFitWidth(200 * scene.getWidth()/ standardWidthPixels);//was logImage.getWidth()/1.6
                     robotCoordsLabel.setFont(new Font("Arial",12* scene.getHeight() / standardHeightPixels));
@@ -267,17 +283,11 @@ public class RobotOnFieldVizMain extends Application {
                             String.format("\nAng3:%.1f°  |  Ang4:%.1f°",Math.toDegrees(robot3Points.get(counter).theta),Math.toDegrees(robot4Points.get(counter).theta)) +
                             String.format("\nElapsed Time: %.1f",(double)counter/10.0));
 //************ UPDATES FOR WINDOW SIZING OUTPUT ************************************
-
                     System.out.println(String.format("Stage Input W: %.1f, H: %.1f & Current W: %.1f, H: %.1f,",stageWidth,stageHeight,primaryStage.getWidth(),primaryStage.getHeight()));
                     System.out.println(String.format(" > Current Scene Width: %.1f, Height: %.1f",scene.getWidth(),scene.getHeight()));
                     System.out.println(String.format(" > fieldCanvas Width: %.1f, Height: %.1f",fieldCanvas.getWidth(),fieldCanvas.getHeight()));
                     System.out.println(String.format(" > fieldBackgroundImageView Width: %.1f, Height: %.1f",fieldBackgroundImageView.getFitWidth(),fieldBackgroundImageView.getFitHeight()));
 //************ UPDATES FOR WINDOW SIZING OUTPUT ************************************
-
-                    //                    System.out.println(String.format("counter value: %d",counter));
-//                    gc.setLineWidth(10);
-//                    buildPoints();
-
 
                 }
                 catch (InterruptedException e) {
@@ -408,15 +418,14 @@ public class RobotOnFieldVizMain extends Application {
         if(counter > (ARRAY_SIZE - 1)) {
             counter = 0;
         }
-//        try{
-//            Thread.sleep(5);//(was 50)This can slow down the time between points and therefore the robot speed
-//            //WIth 4 robots this may not be necessary because of processing time for each step
-//        }
-//        catch (InterruptedException e){
-//            e.printStackTrace();
-//        }
+        try{
+            Thread.sleep(25);//(was 50)This can slow down the time between points and therefore the robot speed
+            //WIth 4 robots this may not be necessary because of processing time for each step
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
-
 
     /**
      * This will move the background image and everything else to follow the robot
@@ -439,6 +448,10 @@ public class RobotOnFieldVizMain extends Application {
         fieldBackgroundImageView.setX(originInPixels.x);
         fieldBackgroundImageView.setY(originInPixels.y);
     }
+
+    /**
+     * This will calculate the servo graphics size and position based on the servo accessory data
+     */
     private double[] defineServo(RobotLocation robot, AccessoryList accList){
         double length = 9;
         double[] returnData = new double[8];
@@ -462,6 +475,25 @@ public class RobotOnFieldVizMain extends Application {
         return returnData;//blue x,y,theta, length, then red x,y,theta, length
     }
 
+    /**
+     * This will set the graphics window location on the selected monitor
+     */
+    public static void setDisplay( int screen, Stage stage){
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gd = ge.getScreenDevices();
+        if(screen >= 0 && screen < gd.length){
+            stage.setX(gd[screen].getDefaultConfiguration().getBounds().x +
+                    gd[screen].getDefaultConfiguration().getBounds().getWidth()/2 - stageWidth/2);
+            stage.setY(gd[screen].getDefaultConfiguration().getBounds().y +
+                    gd[screen].getDefaultConfiguration().getBounds().getHeight()/2 - stageHeight/2);
+        } else if( gd.length > 0 ) {
+            stage.setX(gd[0].getDefaultConfiguration().getBounds().getWidth()/2 - stageWidth/2);
+            stage.setY(gd[0].getDefaultConfiguration().getBounds().getHeight()/2 - stageHeight/2);
+        } else {
+            throw new RuntimeException( "No Screens Found" );
+        }
+
+    }
 
 
 }
