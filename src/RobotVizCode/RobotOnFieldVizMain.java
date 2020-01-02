@@ -418,6 +418,8 @@ public class RobotOnFieldVizMain extends Application {
         if(counter > (ARRAY_SIZE - 1)) {
             counter = 0;
         }
+        /** COMMENTED SECTION CAN BE USED TO SLOW DOWN GRAPHICS DISPLAY
+
         try{
             Thread.sleep(25);//(was 50)This can slow down the time between points and therefore the robot speed
             //WIth 4 robots this may not be necessary because of processing time for each step
@@ -425,6 +427,7 @@ public class RobotOnFieldVizMain extends Application {
         catch (InterruptedException e){
             e.printStackTrace();
         }
+         */
     }
 
     /**
