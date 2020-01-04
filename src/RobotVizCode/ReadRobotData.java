@@ -4,53 +4,55 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class ReadRobotData {
-    public void ReadRobotData() {
+    boolean writeOutput = false;//used for troubleshooting and printing out data
 
+    public ReadRobotData() {
+// empty constructor
+    }
+
+    public ReadRobotData(boolean write) {
+//        constructor to select writing output data
+        this.writeOutput = write;
     }
 
     public ArrayList<RobotLocation> readData(String fileName) {
-        FileInputStream fileInStream = null;
-        FileOutputStream fileOutStream = null;
-        InputStream inStream = null;
-        DataInputStream dataInStream = null;
-        DataOutputStream dataOutStream = null;
-//        System.out.println("Read from File");
-//        System.out.println("X, Y, AngleRad");
+
+        BufferedReader txtReader = null;
+        String s = null;
+        double readX = 0;
+        double readY = 0;
+        double angleRad = 0;
+        boolean readHeader = false; //false = skip initial row as the header, true = read first line
+        int cnt = 0;
         ArrayList<RobotLocation> outputData = new ArrayList<>();
-        try{
-            fileInStream = new FileInputStream(System.getProperty("user.dir")+"/"+fileName);
-            dataInStream = new DataInputStream(fileInStream);
-//            String header = dataInStream.readChar();
-            int cnt = 0;
-            while (dataInStream.available() > 0) {
-    //
-    //                        // read character
-                double readX = dataInStream.readDouble();
-                double readY = dataInStream.readDouble();
-                double angleRad = dataInStream.readDouble();
-                outputData.add(new RobotLocation(readX,readY,angleRad));
+        try {
 
-    //                double dAngle = dataInStream.readDouble();
-    //                double dSin = dataInStream.readDouble();
-    //                double dCos = dataInStream.readDouble();
+// Update to person readable text file for reading in data
+            txtReader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/" + fileName));
+            while ((s = txtReader.readLine()) != null) {
+                String[] data = s.split("\t");
 
-    //                        // print
-//                System.out.println(String.format("%.3f, %.3f, %.3f", readX, readY, angleRad));
-//                System.out.println(String.format("%.3f, %.3f, %.3f", outputData.get(cnt).x, outputData.get(cnt).y, outputData.get(cnt).theta));
+                if (readHeader) {
+                    readX = Double.parseDouble(data[0]);
+                    readY = Double.parseDouble(data[1]);
+                    angleRad = Double.parseDouble(data[2]);
+                }
+                readHeader = true;
+                outputData.add(new RobotLocation(readX, readY, angleRad));
 
-                cnt+=1;
+                cnt += 1;
+
             }
-            fileInStream.close();
-            dataInStream.close();
+            if (writeOutput){
+                System.out.print("Writing Robot or Field Item Data\n");
 
-    //                sizeInput = inStream.available();
-    //
-    //                for(int i = 0; i < sizeInput; i++) {
-    //                    System.out.print((char)inStream.read() + "  ");
-    //                }
-    //                inStream.close();
-        }
-        catch(Exception e){
+                for (int i = 0; i < cnt; i++) {
+                    System.out.print(String.format("%d, %.1f, %.1f, %.1f\n", i, outputData.get(i).x, outputData.get(i).y, outputData.get(i).theta));
+                }
+            }
+            txtReader.close();
+
+        }catch(Exception e){
     //                    // if an I/O error occurs
             e.printStackTrace();
         }
