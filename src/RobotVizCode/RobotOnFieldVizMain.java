@@ -76,9 +76,9 @@ public class RobotOnFieldVizMain extends Application {
      * stageHEight is the vertical size
      *
      */
-    public static double stageWidth = 760;//860;//User input for the desired size
-    public static double stageHeight = 680;//860*1.02;//User input for the desired size (needs to be 1.02 larger to keep the scene square)
-    public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 and 1 = Monitor 2
+    public static double stageWidth = 960;//User input for the desired size (Caleb = 760, Karl = 960)
+    public static double stageHeight = 980;//User input for the desired size (Caleb = 680, Karl = 980)
+    public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 (laptop) and 1 = Monitor 2
 
     //Sets the robot image graphics size
     public double robotWidth = 14;//inches across front to back w/o gripper since robots start front to back in X (Width)
