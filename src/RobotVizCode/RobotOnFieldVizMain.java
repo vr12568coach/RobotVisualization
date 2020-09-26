@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -49,6 +48,11 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> robot3Points = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot4Points = new ArrayList<>();//all the points to display
 
+    public static ArrayList<RobotVizCode.RobotLocation> robot1PursuitPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot2PursuitPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot3PursuitPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot4PursuitPoints = new ArrayList<>();//all the points to display
+
     public static ArrayList<RobotVizCode.RobotLocation> BlueFoundationPoints = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone1Points = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone2Points = new ArrayList<>();//all the points to display
@@ -66,7 +70,11 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> robot3Gripper = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot4Gripper = new ArrayList<>();//all the points to display
 
-    public static ArrayList<RobotVizCode.DefineLine> displayLines = new ArrayList<>();//all the lines to display
+    public static ArrayList<RobotVizCode.DefineLine> robot1Lines = new ArrayList<>();//all the lines to display
+    public static ArrayList<RobotVizCode.DefineLine> robot2Lines = new ArrayList<>();//all the lines to display
+    public static ArrayList<RobotVizCode.DefineLine> robot3Lines = new ArrayList<>();//all the lines to display
+    public static ArrayList<RobotVizCode.DefineLine> robot4Lines = new ArrayList<>();//all the lines to display
+
     public static int counter = 0;
 
     static double  standardWidthPixels = 800;//standard width for scaling of window 800
@@ -76,8 +84,10 @@ public class RobotOnFieldVizMain extends Application {
      * stageHEight is the vertical size
      *
      */
-    public static double stageWidth = 960;//User input for the desired size (Caleb = 760, Karl = 960)
-    public static double stageHeight = 980;//User input for the desired size (Caleb = 680, Karl = 980)
+    public static double stageWidth = 768;//User input for the desired size (Caleb = 760, Karl Monitor = 960)
+                                            // Karl Laptop =768
+    public static double stageHeight = 732;//User input for the desired size (Caleb = 680, Karl Monitor= 980)
+                                            // Karl Laptop =732
     public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 (laptop) and 1 = Monitor 2
 
     //Sets the robot image graphics size
@@ -201,11 +211,22 @@ public class RobotOnFieldVizMain extends Application {
                         /**should look to make a method to simplify and reduce the lines of code
                          *
                          */
+                        robot1Lines.clear();
+                        robot1Lines.addAll(roboRead.readLines("Robot1Path.txt"));
+//                        robot2Lines.clear();
+//                        robot2Lines.addAll(roboRead.readLines("Robot2Path.txt"));
+//                        robot3Lines.clear();
+//                        robot3Lines.addAll(roboRead.readLines("Robot3Path.txt"));
+//                        robot4Lines.clear();
+//                        robot4Lines.addAll(roboRead.readLines("Robot4Path.txt"));
+
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
                         robot1Acc = ReadAccessories.readAcc("Robot1Accessories.txt");
                         robot1Gripper.clear();
                         robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
+                        robot1PursuitPoints.clear();
+                        robot1PursuitPoints.addAll(roboRead.readData("Robot1Pursuit.txt"));
 
                         robot2Points.clear();
                         robot2Points.addAll(roboRead.readData("Robot2OnField.txt"));
@@ -311,6 +332,14 @@ public class RobotOnFieldVizMain extends Application {
         gc.clearRect(0,0, FieldToScreen.widthScreen, FieldToScreen.heightScreen);
 //        gc.fillRect(0,0,Screen.widthScreen,Screen.heightScreen);
 
+        //Draw the robot pursuit lines
+        double[] lineColor = {0,0,0};
+
+        drawLines( gc, robot1Lines,lineColor);
+//        drawLines( gc, robot2Lines,lineColor);
+//        drawLines( gc, robot3Lines,lineColor);
+//        drawLines( gc, robot4Lines,lineColor);
+
         //then draw the robot
         //Alternate robot draw option for multi-robots
 
@@ -405,15 +434,18 @@ public class RobotOnFieldVizMain extends Application {
 
 //        drawDebugPoints(gc);
         double[] colors1 = {0.3, 1.0};
+        double[] colors1P = {1.0, 1.0};
         double[] colors2 = {0.4, 0.9};
         double[] colors3 = {1, 0};
         double[] colors4 = {0.9, 0.0};
 //        robotCoordsLabel.textFillProperty().setValue(new Color(0.4,0.9,1,1));
         DrawPoints.drawPoints(gc, counter, robot1Points,colors1);
+        DrawPoints.drawPoints(gc, counter, robot1PursuitPoints,colors1P);
         DrawPoints.drawPoints(gc, counter, robot2Points,colors2);
         DrawPoints.drawPoints(gc, counter, robot3Points,colors3);
         DrawPoints.drawPoints(gc, counter, robot4Points,colors4);
-//        drawDebugLines(gc);
+
+
 
 
         counter+=1;
@@ -431,6 +463,26 @@ public class RobotOnFieldVizMain extends Application {
             e.printStackTrace();
         }
          */
+    }
+    /**
+     * PLot lines to see desired path for Pure Pursuit
+     */
+    private void drawLines(GraphicsContext gc, ArrayList<DefineLine> lineList, double[] colorArray) {
+        double fieldHalfWidth = (12*12/2);//12 foot field half width in inches
+
+        for(int i = 0; i < lineList.size(); i ++){
+            DefinePoint displayLocation1 = FieldToScreen.convertToScreenPoint(
+                    new DefinePoint(fieldHalfWidth+lineList.get(i).x1, fieldHalfWidth+lineList.get(i).y1));
+            DefinePoint displayLocation2 = FieldToScreen.convertToScreenPoint(
+                    new DefinePoint(fieldHalfWidth+lineList.get(i).x2, fieldHalfWidth+lineList.get(i).y2));
+
+
+            gc.setLineWidth(4);
+            gc.setStroke(new Color(colorArray[0],colorArray[1],colorArray[2], 1.0));
+
+
+            gc.strokeLine(displayLocation1.x,displayLocation1.y,displayLocation2.x,displayLocation2.y);
+        }
     }
 
     /**
