@@ -49,6 +49,8 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> robot4Points = new ArrayList<>();//all the points to display
 
     public static ArrayList<RobotVizCode.RobotLocation> robot1PursuitPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> robot1NavPoints = new ArrayList<>();//all the points to display
+
     public static ArrayList<RobotVizCode.RobotLocation> robot2PursuitPoints = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot3PursuitPoints = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot4PursuitPoints = new ArrayList<>();//all the points to display
@@ -84,9 +86,9 @@ public class RobotOnFieldVizMain extends Application {
      * stageHEight is the vertical size
      *
      */
-    public static double stageWidth = 768;//User input for the desired size (Caleb = 760, Karl Monitor = 960)
+    public static double stageWidth = 960;//User input for the desired size (Caleb = 760, Karl Monitor = 960)
                                             // Karl Laptop =768
-    public static double stageHeight = 732;//User input for the desired size (Caleb = 680, Karl Monitor= 980)
+    public static double stageHeight = 980;//User input for the desired size (Caleb = 680, Karl Monitor= 980)
                                             // Karl Laptop =732
     public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 (laptop) and 1 = Monitor 2
 
@@ -227,6 +229,8 @@ public class RobotOnFieldVizMain extends Application {
                         robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
                         robot1PursuitPoints.clear();
                         robot1PursuitPoints.addAll(roboRead.readData("Robot1Pursuit.txt"));
+                        robot1NavPoints.clear();
+                        robot1NavPoints.addAll(roboRead.readData("Robot1Nav.txt"));
 
                         robot2Points.clear();
                         robot2Points.addAll(roboRead.readData("Robot2OnField.txt"));
@@ -435,12 +439,15 @@ public class RobotOnFieldVizMain extends Application {
 //        drawDebugPoints(gc);
         double[] colors1 = {0.3, 1.0};
         double[] colors1P = {1.0, 1.0};
+        double[] colors1N1= {1.0, 0.25};
         double[] colors2 = {0.4, 0.9};
         double[] colors3 = {1, 0};
         double[] colors4 = {0.9, 0.0};
 //        robotCoordsLabel.textFillProperty().setValue(new Color(0.4,0.9,1,1));
         DrawPoints.drawPoints(gc, counter, robot1Points,colors1);
         DrawPoints.drawPoints(gc, counter, robot1PursuitPoints,colors1P);
+        DrawPoints.drawPoints(gc, counter, robot1NavPoints,colors1N1);
+
         DrawPoints.drawPoints(gc, counter, robot2Points,colors2);
         DrawPoints.drawPoints(gc, counter, robot3Points,colors3);
         DrawPoints.drawPoints(gc, counter, robot4Points,colors4);
