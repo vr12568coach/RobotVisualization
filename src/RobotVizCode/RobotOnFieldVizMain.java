@@ -55,12 +55,12 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> robot3PursuitPoints = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot4PursuitPoints = new ArrayList<>();//all the points to display
 
-    public static ArrayList<RobotVizCode.RobotLocation> BlueFoundationPoints = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone1Points = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> BlueSkyStone2Points = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStone1Points = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> RedSkyStone2Points = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> RedFoundationPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueWobbleGoal1Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueRingPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> BlueWobbleGoal2Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedRingPoints = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedWobbleGoal2Points = new ArrayList<>();//all the points to display
+    public static ArrayList<RobotVizCode.RobotLocation> RedWobbleGoal1Points = new ArrayList<>();//all the points to display
 
     public static AccessoryList robot1Acc = new AccessoryList();
     public static AccessoryList robot2Acc = new AccessoryList();
@@ -77,6 +77,8 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.DefineLine> robot3Lines = new ArrayList<>();//all the lines to display
     public static ArrayList<RobotVizCode.DefineLine> robot4Lines = new ArrayList<>();//all the lines to display
 
+    public static String ringSetString = "none";
+
     public static int counter = 0;
 
     static double  standardWidthPixels = 800;//standard width for scaling of window 800
@@ -86,10 +88,18 @@ public class RobotOnFieldVizMain extends Application {
      * stageHEight is the vertical size
      *
      */
-    public static double stageWidth = 960;//User input for the desired size (Caleb = 760, Karl Monitor = 960)
+    public static double stageWidth = 680;//User input for the desired size (Caleb = 760, Karl Monitor = 960)
                                             // Karl Laptop =768
-    public static double stageHeight = 980;//User input for the desired size (Caleb = 680, Karl Monitor= 980)
+    public static double stageHeight = 680;//User input for the desired size (Caleb = 680, Karl Monitor= 980)
                                             // Karl Laptop =732
+
+    public static double stageWidthMon0 = 730;//User input for the desired size (Caleb = 760, Karl Laptop = 730)
+    public static double stageHeightMon0 = 730;//User input for the desired size (Caleb = 680, Karl Laptop = 730)
+
+
+    public static double stageWidthMon1 = 1080;//User input for the desired size (Karl Monitor = 960)
+    public static double stageHeightMon1 = 1080;//User input for the desired size (Karl Monitor= 960)
+
     public static int monitorSelect = 1;//set the monitor location 0 = Monitor 1 (laptop) and 1 = Monitor 2
 
     //Sets the robot image graphics size
@@ -128,7 +138,7 @@ public class RobotOnFieldVizMain extends Application {
         mainHBox.prefHeightProperty().bind(primaryStage.heightProperty());
 
         ///////////////////////////////////Setup the background image/////////////////////////////////
-        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/FieldNoFoundations4.png"));
+        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "/UltGoalField.png"));
 
         fieldBackgroundImageView = new ImageView();
         fieldBackgroundImageView.setImage(image);//set the image
@@ -139,6 +149,15 @@ public class RobotOnFieldVizMain extends Application {
 
 
         //Setup the canvas//
+        if(monitorSelect == 0){
+            stageWidth = stageWidthMon0;
+            stageHeight = stageHeightMon0;
+        }
+        else {
+            stageWidth = stageWidthMon1;
+            stageHeight = stageHeightMon1;
+        }
+
         fieldCanvas = new Canvas(stageWidth,stageHeight);// set to teh user input width
 
         //the GraphicsContext is what we use to draw on the fieldCanvas
@@ -169,7 +188,7 @@ public class RobotOnFieldVizMain extends Application {
          * Set so that as logGroup position is changed keeping the relative location of the text box the same
          */
         logGroup.setTranslateY(10 * stageHeight/ standardHeightPixels);
-        logGroup.setTranslateX(285 * stageWidth / standardWidthPixels);
+        logGroup.setTranslateX(0 * stageWidth / standardWidthPixels);
 
 
         //add the background image
@@ -203,7 +222,7 @@ public class RobotOnFieldVizMain extends Application {
         //show the primaryStage
         primaryStage.show();
 
-
+        ringSetString = roboRead.readRingSet("RingSet.txt");
         //CREATE A NEW ANIMATION TIMER THAT WILL CALL THE DRAWING OF THE SCREEN
         new AnimationTimer() {
             @Override public void handle(long currentNanoTime) {
@@ -250,18 +269,19 @@ public class RobotOnFieldVizMain extends Application {
                         robot4Gripper.clear();
                         robot4Gripper.addAll(roboRead.readData("Robot4Gripper.txt"));
 
-                        RedFoundationPoints.clear();
-                        RedFoundationPoints.addAll(roboRead.readData("RedFoundation.txt"));
-                        BlueFoundationPoints.clear();
-                        BlueFoundationPoints.addAll(roboRead.readData("BlueFoundation.txt"));
-                        BlueSkyStone1Points.clear();
-                        BlueSkyStone1Points.addAll(roboRead.readData("BlueSkyStone1.txt"));
-                        BlueSkyStone2Points.clear();
-                        BlueSkyStone2Points.addAll(roboRead.readData("BlueSkyStone2.txt"));
-                        RedSkyStone1Points.clear();
-                        RedSkyStone1Points.addAll(roboRead.readData("RedSkyStone1.txt"));
-                        RedSkyStone2Points.clear();
-                        RedSkyStone2Points.addAll(roboRead.readData("RedSkyStone2.txt"));
+                        RedWobbleGoal1Points.clear();
+                        RedWobbleGoal1Points.addAll(roboRead.readData("RedWobble1.txt"));
+                        RedWobbleGoal2Points.clear();
+                        RedWobbleGoal2Points.addAll(roboRead.readData("RedWobble2.txt"));
+                        BlueWobbleGoal1Points.clear();
+                        BlueWobbleGoal1Points.addAll(roboRead.readData("BlueWobble1.txt"));
+                        BlueWobbleGoal2Points.clear();
+                        BlueWobbleGoal2Points.addAll(roboRead.readData("BlueWobble2.txt"));
+                        BlueRingPoints.clear();
+                        BlueRingPoints.addAll(roboRead.readData("BlueRing.txt"));
+                        RedRingPoints.clear();
+                        RedRingPoints.addAll(roboRead.readData("RedRing.txt"));
+//
 
                     }
                     /**acquire the drawing semaphore
@@ -282,7 +302,7 @@ public class RobotOnFieldVizMain extends Application {
 
                     robotCoordsLabel.setMaxWidth(scene.getWidth() * 0.5);
 //************ UPDATES FOR WINDOW SIZING ************************************
-                    /** optinal code for moving the background image within the scene
+                    /** optional code for moving the background image within the scene
                      * fieldBackgroundImageView.setTranslateX(-3* scene.getWidth()/standardWidthPixels);
                      * fieldBackgroundImageView.setTranslateY(-4* scene.getHeight()/standardHeightPixels);
                      *
@@ -292,7 +312,7 @@ public class RobotOnFieldVizMain extends Application {
                     robotCoordsLabel.setFont(new Font("Arial",12* scene.getHeight() / standardHeightPixels));
                     logGroup.setTranslateY(10 * scene.getHeight() / standardHeightPixels);//was 10 or 100
                     //Set so that as stage Width is changed the relative location of the text box is the same
-                    logGroup.setTranslateX(285 * scene.getWidth() / standardWidthPixels);// use 0 for LH side, 285 for center, 550 for RH side
+                    logGroup.setTranslateX(550 * scene.getWidth() / standardWidthPixels);// use 0 for LH side, 285 for center, 550 for RH side
                     //Set so that as stage Width is changed the relative location of the text box is the same
                     robotCoordsLabel.setLayoutX(16* scene.getWidth() / standardWidthPixels);
                     robotCoordsLabel.setLayoutY(50* scene.getHeight()  / standardHeightPixels );//was logImageView.getFitHeight()/5
@@ -333,13 +353,13 @@ public class RobotOnFieldVizMain extends Application {
      */
     private void drawScreen(GraphicsContext gc) {
         //clear everything first
-        gc.clearRect(0,0, FieldToScreen.widthScreen, FieldToScreen.heightScreen);
+        gc.clearRect(0, 0, FieldToScreen.widthScreen, FieldToScreen.heightScreen);
 //        gc.fillRect(0,0,Screen.widthScreen,Screen.heightScreen);
 
         //Draw the robot pursuit lines
-        double[] lineColor = {0,0,0};
+        double[] lineColor = {0, 0, 0};
 
-        drawLines( gc, robot1Lines,lineColor);
+        drawLines(gc, robot1Lines, lineColor);
 //        drawLines( gc, robot2Lines,lineColor);
 //        drawLines( gc, robot3Lines,lineColor);
 //        drawLines( gc, robot4Lines,lineColor);
@@ -347,49 +367,56 @@ public class RobotOnFieldVizMain extends Application {
         //then draw the robot
         //Alternate robot draw option for multi-robots
 
-        DefinePoint robot1Center = DrawObjects.drawImage(gc, robot1Points.get(counter), robotWidth, robotHeight,"NewRobot1.png");
-        followRobot(robot1Center.x,robot1Center.y);
+        DefinePoint robot1Center = DrawObjects.drawImage(gc, robot1Points.get(counter), robotWidth, robotHeight, "NewRobot1.png");
+        followRobot(robot1Center.x, robot1Center.y);
 
-        if(robot1Acc.jackDir[counter]==1){
-            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6,"UpArrow.png");
+        if (robot1Acc.jackDir[counter] == 1) {
+            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6, "UpArrow.png");
+        } else if (robot1Acc.jackDir[counter] == -1) {
+            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6, "DownArrow.png");
         }
-        else if(robot1Acc.jackDir[counter]==-1){
-            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6,"DownArrow.png");
-        }
-        double[] robot1ServoData = defineServo(robot1Points.get(counter),robot1Acc);
-        DefinePoint robot1BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0],robot1ServoData[1],robot1ServoData[2]),
-                1.5,robot1ServoData[3],"ServoArm.png");
-        DefinePoint robot1RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0],robot1ServoData[1],robot1ServoData[2]),
-                1.5,robot1ServoData[3],"ServoArm.png");
-        DefinePoint robot1G = DrawObjects.drawImage(gc, robot1Gripper.get(counter), 4, robot1Acc.gripperWidth[counter],"Gripper.png");
+        double[] robot1ServoData = defineServo(robot1Points.get(counter), robot1Acc);
+        DefinePoint robot1BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0], robot1ServoData[1], robot1ServoData[2]),
+                1.5, robot1ServoData[3], "ServoArm.png");
+        DefinePoint robot1RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0], robot1ServoData[1], robot1ServoData[2]),
+                1.5, robot1ServoData[3], "ServoArm.png");
+        DefinePoint robot1G = DrawObjects.drawImage(gc, robot1Gripper.get(counter), 4, robot1Acc.gripperWidth[counter], "Gripper.png");
 
-        DefinePoint robot2Center = DrawObjects.drawImage(gc,robot2Points.get(counter),robotWidth, robotHeight,"NewRobot2.png");
+        DefinePoint robot2Center = DrawObjects.drawImage(gc, robot2Points.get(counter), robotWidth, robotHeight, "NewRobot2.png");
 //        followRobot(robot2Center.x,robot2Center.y);
 
-        if(robot2Acc.jackDir[counter]==1){
-            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6,"UpArrow.png");
+        if (robot2Acc.jackDir[counter] == 1) {
+            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6, "UpArrow.png");
+        } else if (robot2Acc.jackDir[counter] == -1) {
+            DefinePoint robot2Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6, "DownArrow.png");
         }
-        else if(robot2Acc.jackDir[counter]==-1){
-            DefinePoint robot2Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6,"DownArrow.png");
-        }
-        double[] robot2ServoData = defineServo(robot2Points.get(counter),robot2Acc);
-        DefinePoint robot2BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[0],robot2ServoData[1],robot2ServoData[2]),
-                1.5,robot2ServoData[3],"ServoArm.png");
+        double[] robot2ServoData = defineServo(robot2Points.get(counter), robot2Acc);
+        DefinePoint robot2BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[0], robot2ServoData[1], robot2ServoData[2]),
+                1.5, robot2ServoData[3], "ServoArm.png");
 
-        DefinePoint robot2RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[4],robot2ServoData[5],robot2ServoData[6]),
+        DefinePoint robot2RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[4], robot2ServoData[5], robot2ServoData[6]),
                 1.5, robot2ServoData[7], "ServoArm.png");
-        DefinePoint robot2G = DrawObjects.drawImage(gc, robot2Gripper.get(counter), 4, robot2Acc.gripperWidth[counter],"Gripper.png");
+        DefinePoint robot2G = DrawObjects.drawImage(gc, robot2Gripper.get(counter), 4, robot2Acc.gripperWidth[counter], "Gripper.png");
 
 
+        DefinePoint BlueWobble1Center = DrawObjects.drawImage(gc, BlueWobbleGoal1Points.get(counter), 8, 8, "blueWobbleGoal.png");
+//        followRobot(BlueWobble1Center.x,BlueWobble1Center.y);
 
+        DefinePoint BlueWobble2Center = DrawObjects.drawImage(gc, BlueWobbleGoal2Points.get(counter), 8, 8, "blueWobbleGoal.png");
+//        followRobot(BlueWobble2Center.x,BlueWobble2Center.y);
 
-        DefinePoint BlueFoundCenter = DrawObjects.drawImage(gc, BlueFoundationPoints.get(counter),18.5, 34.5,"BlueFoundation.png");
-//        followRobot(BlueFoundCenter.x,BlueFoundCenter.y);
+        if (ringSetString.equals("ring")) {
+            DefinePoint BlueRingCenter = DrawObjects.drawImage(gc, BlueRingPoints.get(counter), 5, 5, "ring.png");
+            DefinePoint RedRingCenter = DrawObjects.drawImage(gc, RedRingPoints.get(counter),5, 5,"ring.png");
 
-        DefinePoint BlueStone1Center = DrawObjects.drawImage(gc, BlueSkyStone1Points.get(counter),4,8,"BlueStone.png");
-//        followRobot(BlueStone1Center.x,BlueStone1Center.y);
-        DefinePoint BlueStone2Center = DrawObjects.drawImage(gc, BlueSkyStone2Points.get(counter),4,8,"BlueStone.png");
-//        followRobot(BlueStone2Center.x,BlueStone2Center.y);
+        }
+        else if (ringSetString.equals("ringStack")){
+            DefinePoint BlueRingStackCenter = DrawObjects.drawImage(gc, BlueRingPoints.get(counter),5,5.5,"ringStack.png");
+            DefinePoint RedRingStackCenter = DrawObjects.drawImage(gc, RedRingPoints.get(counter),5, 5.5,"ringStack.png");
+
+        }
+
+////        followRobot(BlueStone2Center.x,BlueStone2Center.y);
 
 
 
@@ -425,12 +452,11 @@ public class RobotOnFieldVizMain extends Application {
                 1.5, robot4ServoData[7], "ServoArm.png");
         DefinePoint robot4G = DrawObjects.drawImage(gc, robot4Gripper.get(counter), 4, robot4Acc.gripperWidth[counter],"Gripper.png");
 
-        DefinePoint RedFoundCenter = DrawObjects.drawImage(gc, RedFoundationPoints.get(counter),18.5, 34.5,"RedFoundation.png");
 //        followRobot(RedFoundCenter.x,RedFoundCenter.y);
 
-        DefinePoint RedStone1Center = DrawObjects.drawImage(gc, RedSkyStone1Points.get(counter),4,8,"RedStone.png");
+        DefinePoint RedWobble1Center = DrawObjects.drawImage(gc, RedWobbleGoal1Points.get(counter),8,8,"redWobbleGoal.png");
 //        followRobot(RedStone1Center.x,RedStone1Center.y);
-        DefinePoint RedStone2Center = DrawObjects.drawImage(gc, RedSkyStone2Points.get(counter),4,8,"RedStone.png");
+        DefinePoint RedWobble2Center = DrawObjects.drawImage(gc, RedWobbleGoal2Points.get(counter),8,8,"redWobbleGoal.png");
 //        followRobot(RedStone2Center.x,RedStone2Center.y);
 
 

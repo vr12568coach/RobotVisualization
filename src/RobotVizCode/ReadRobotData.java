@@ -104,4 +104,22 @@ public class ReadRobotData {
         }
         return outputData;
     }
+    public String readRingSet(String fileName) {
+
+        BufferedReader txtReader;
+        String s = "none";//default
+        try {
+
+           txtReader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/" + fileName));
+            s = txtReader.readLine();
+            System.out.print(String.format(" Ring Set Condition: %s\n", s));
+
+            txtReader.close();
+
+        }catch(Exception e){
+            //                    // if an I/O error occurs
+            e.printStackTrace();
+        }
+        return s;
+    }
 }
