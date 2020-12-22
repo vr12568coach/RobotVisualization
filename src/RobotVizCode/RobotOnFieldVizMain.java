@@ -67,10 +67,10 @@ public class RobotOnFieldVizMain extends Application {
     public static AccessoryList robot3Acc = new AccessoryList();
     public static AccessoryList robot4Acc = new AccessoryList();
 
-    public static ArrayList<RobotVizCode.RobotLocation> robot1Gripper = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> robot2Gripper = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> robot3Gripper = new ArrayList<>();//all the points to display
-    public static ArrayList<RobotVizCode.RobotLocation> robot4Gripper = new ArrayList<>();//all the points to display
+//    public static ArrayList<RobotVizCode.RobotLocation> robot1Gripper = new ArrayList<>();//all the points to display
+//    public static ArrayList<RobotVizCode.RobotLocation> robot2Gripper = new ArrayList<>();//all the points to display
+//    public static ArrayList<RobotVizCode.RobotLocation> robot3Gripper = new ArrayList<>();//all the points to display
+//    public static ArrayList<RobotVizCode.RobotLocation> robot4Gripper = new ArrayList<>();//all the points to display
 
     public static ArrayList<RobotVizCode.DefineLine> robot1Lines = new ArrayList<>();//all the lines to display
     public static ArrayList<RobotVizCode.DefineLine> robot2Lines = new ArrayList<>();//all the lines to display
@@ -244,8 +244,8 @@ public class RobotOnFieldVizMain extends Application {
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
                         robot1Acc = ReadAccessories.readAcc("Robot1Accessories.txt");
-                        robot1Gripper.clear();
-                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
+//                        robot1Gripper.clear();
+//                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
                         robot1PursuitPoints.clear();
                         robot1PursuitPoints.addAll(roboRead.readData("Robot1Pursuit.txt"));
                         robot1NavPoints.clear();
@@ -254,20 +254,20 @@ public class RobotOnFieldVizMain extends Application {
                         robot2Points.clear();
                         robot2Points.addAll(roboRead.readData("Robot2OnField.txt"));
                         robot2Acc = ReadAccessories.readAcc("Robot2Accessories.txt");
-                        robot2Gripper.clear();
-                        robot2Gripper.addAll(roboRead.readData("Robot2Gripper.txt"));
+//                        robot2Gripper.clear();
+//                        robot2Gripper.addAll(roboRead.readData("Robot2Gripper.txt"));
 
                         robot3Points.clear();
                         robot3Points.addAll(roboRead.readData("Robot3OnField.txt"));
                         robot3Acc = ReadAccessories.readAcc("Robot3Accessories.txt");
-                        robot3Gripper.clear();
-                        robot3Gripper.addAll(roboRead.readData("Robot3Gripper.txt"));
+//                        robot3Gripper.clear();
+//                        robot3Gripper.addAll(roboRead.readData("Robot3Gripper.txt"));
 
                         robot4Points.clear();
                         robot4Points.addAll(roboRead.readData("Robot4OnField.txt"));
                         robot4Acc = ReadAccessories.readAcc("Robot4Accessories.txt");
-                        robot4Gripper.clear();
-                        robot4Gripper.addAll(roboRead.readData("Robot4Gripper.txt"));
+//                        robot4Gripper.clear();
+//                        robot4Gripper.addAll(roboRead.readData("Robot4Gripper.txt"));
 
                         RedWobbleGoal1Points.clear();
                         RedWobbleGoal1Points.addAll(roboRead.readData("RedWobble1.txt"));
@@ -368,97 +368,34 @@ public class RobotOnFieldVizMain extends Application {
         //Alternate robot draw option for multi-robots
 
         DefinePoint robot1Center = DrawObjects.drawImage(gc, robot1Points.get(counter), robotWidth, robotHeight, "NewRobot1.png");
-        followRobot(robot1Center.x, robot1Center.y);
-
-        if (robot1Acc.jackDir[counter] == 1) {
-            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6, "UpArrow.png");
-        } else if (robot1Acc.jackDir[counter] == -1) {
-            DrawObjects.drawImage(gc, robot1Points.get(counter), 6, 6, "DownArrow.png");
-        }
-        double[] robot1ServoData = defineServo(robot1Points.get(counter), robot1Acc);
-        DefinePoint robot1BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0], robot1ServoData[1], robot1ServoData[2]),
-                1.5, robot1ServoData[3], "ServoArm.png");
-        DefinePoint robot1RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot1ServoData[0], robot1ServoData[1], robot1ServoData[2]),
-                1.5, robot1ServoData[3], "ServoArm.png");
-        DefinePoint robot1G = DrawObjects.drawImage(gc, robot1Gripper.get(counter), 4, robot1Acc.gripperWidth[counter], "Gripper.png");
+        followRobot(robot1Center.x, robot1Center.y); // not sure why this is needed to run once, but only run for 1st image
+        drawAccessories(gc,robot1Points.get(counter), robot1Acc);
 
         DefinePoint robot2Center = DrawObjects.drawImage(gc, robot2Points.get(counter), robotWidth, robotHeight, "NewRobot2.png");
-//        followRobot(robot2Center.x,robot2Center.y);
-
-        if (robot2Acc.jackDir[counter] == 1) {
-            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6, "UpArrow.png");
-        } else if (robot2Acc.jackDir[counter] == -1) {
-            DefinePoint robot2Jack = DrawObjects.drawImage(gc, robot2Points.get(counter), 6, 6, "DownArrow.png");
-        }
-        double[] robot2ServoData = defineServo(robot2Points.get(counter), robot2Acc);
-        DefinePoint robot2BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[0], robot2ServoData[1], robot2ServoData[2]),
-                1.5, robot2ServoData[3], "ServoArm.png");
-
-        DefinePoint robot2RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot2ServoData[4], robot2ServoData[5], robot2ServoData[6]),
-                1.5, robot2ServoData[7], "ServoArm.png");
-        DefinePoint robot2G = DrawObjects.drawImage(gc, robot2Gripper.get(counter), 4, robot2Acc.gripperWidth[counter], "Gripper.png");
+        drawAccessories(gc,robot2Points.get(counter), robot2Acc);
 
 
         DefinePoint BlueWobble1Center = DrawObjects.drawImage(gc, BlueWobbleGoal1Points.get(counter), 8, 8, "blueWobbleGoal.png");
-//        followRobot(BlueWobble1Center.x,BlueWobble1Center.y);
-
         DefinePoint BlueWobble2Center = DrawObjects.drawImage(gc, BlueWobbleGoal2Points.get(counter), 8, 8, "blueWobbleGoal.png");
-//        followRobot(BlueWobble2Center.x,BlueWobble2Center.y);
 
         if (ringSetString.equals("ring")) {
             DefinePoint BlueRingCenter = DrawObjects.drawImage(gc, BlueRingPoints.get(counter), 5, 5, "ring.png");
             DefinePoint RedRingCenter = DrawObjects.drawImage(gc, RedRingPoints.get(counter),5, 5,"ring.png");
-
         }
         else if (ringSetString.equals("ringStack")){
             DefinePoint BlueRingStackCenter = DrawObjects.drawImage(gc, BlueRingPoints.get(counter),5,5.5,"ringStack.png");
             DefinePoint RedRingStackCenter = DrawObjects.drawImage(gc, RedRingPoints.get(counter),5, 5.5,"ringStack.png");
-
         }
-
-////        followRobot(BlueStone2Center.x,BlueStone2Center.y);
-
 
 
         DefinePoint robot3Center = DrawObjects.drawImage(gc, robot3Points.get(counter), robotWidth, robotHeight,"RedRobot1.png");
-//        followRobot(robot3Center.x,robot3Center.y);
-
-        if(robot3Acc.jackDir[counter]==1){
-            DefinePoint robot3Jack = DrawObjects.drawImage(gc, robot3Points.get(counter), 6, 6,"UpArrow.png");
-        }
-        else if(robot3Acc.jackDir[counter]==-1){
-            DefinePoint robot3Jack = DrawObjects.drawImage(gc, robot3Points.get(counter), 6, 6,"DownArrow.png");
-        }
-        double[] robot3ServoData = defineServo(robot3Points.get(counter),robot3Acc);
-        DefinePoint robot3BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot3ServoData[0],robot3ServoData[1],robot3ServoData[2]),
-                1.5,robot3ServoData[3],"ServoArm.png");
-        DefinePoint robot3RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot3ServoData[4],robot3ServoData[5],robot3ServoData[6]),
-                1.5, robot3ServoData[7], "ServoArm.png");
-        DefinePoint robot3G = DrawObjects.drawImage(gc, robot3Gripper.get(counter), 4, robot3Acc.gripperWidth[counter],"Gripper.png");
+        drawAccessories(gc,robot3Points.get(counter), robot3Acc);
 
         DefinePoint robot4Center = DrawObjects.drawImage(gc, robot4Points.get(counter), robotWidth, robotHeight,"RedRobot2.png");
-//        followRobot(robot4Center.x,robot4Center.y);
-
-        if(robot4Acc.jackDir[counter]==1){
-            DefinePoint robot1Jack = DrawObjects.drawImage(gc, robot4Points.get(counter), 6, 6,"UpArrow.png");
-        }
-        else if(robot4Acc.jackDir[counter]==-1){
-            DefinePoint robot4Jack = DrawObjects.drawImage(gc, robot4Points.get(counter), 6, 6,"DownArrow.png");
-        }
-        double[] robot4ServoData = defineServo(robot4Points.get(counter),robot4Acc);
-        DefinePoint robot4BlueServo = DrawObjects.drawImage(gc, new RobotLocation(robot4ServoData[0],robot4ServoData[1],robot4ServoData[2]),
-                1.5,robot4ServoData[3],"ServoArm.png");
-        DefinePoint robot4RedServo = DrawObjects.drawImage(gc, new RobotLocation(robot4ServoData[4],robot4ServoData[5],robot4ServoData[6]),
-                1.5, robot4ServoData[7], "ServoArm.png");
-        DefinePoint robot4G = DrawObjects.drawImage(gc, robot4Gripper.get(counter), 4, robot4Acc.gripperWidth[counter],"Gripper.png");
-
-//        followRobot(RedFoundCenter.x,RedFoundCenter.y);
+        drawAccessories(gc,robot4Points.get(counter), robot4Acc);
 
         DefinePoint RedWobble1Center = DrawObjects.drawImage(gc, RedWobbleGoal1Points.get(counter),8,8,"redWobbleGoal.png");
-//        followRobot(RedStone1Center.x,RedStone1Center.y);
         DefinePoint RedWobble2Center = DrawObjects.drawImage(gc, RedWobbleGoal2Points.get(counter),8,8,"redWobbleGoal.png");
-//        followRobot(RedStone2Center.x,RedStone2Center.y);
-
 
         //draw all the lines and points retrieved from the phone
 
@@ -478,9 +415,6 @@ public class RobotOnFieldVizMain extends Application {
         DrawPoints.drawPoints(gc, counter, robot3Points,colors3);
         DrawPoints.drawPoints(gc, counter, robot4Points,colors4);
 
-
-
-
         counter+=1;
         if(counter > (ARRAY_SIZE - 1)) {
             counter = 0;
@@ -498,7 +432,7 @@ public class RobotOnFieldVizMain extends Application {
          */
     }
     /**
-     * PLot lines to see desired path for Pure Pursuit
+     * Plot lines to see desired path for Pure Pursuit
      */
     private void drawLines(GraphicsContext gc, ArrayList<DefineLine> lineList, double[] colorArray) {
         double fieldHalfWidth = (12*12/2);//12 foot field half width in inches
@@ -520,6 +454,7 @@ public class RobotOnFieldVizMain extends Application {
 
     /**
      * This will move the background image and everything else to follow the robot
+     * Should this be deleted?
      */
     private void followRobot(double robotX, double robotY){
         //set the center point to the robot
@@ -541,29 +476,109 @@ public class RobotOnFieldVizMain extends Application {
     }
 
     /**
-     * This will calculate the servo graphics size and position based on the servo accessory data
+     * This will calculate the wobbleGoalArm graphics size and position based on the WGA angle accessory data
      */
-    private double[] defineServo(RobotLocation robot, AccessoryList accList){
-        double length = 9;
-        double[] returnData = new double[8];
+    private double[] defineWGA(RobotLocation robot, AccessoryList accList){
+        double length = 12.0;
+        double[] returnData = new double[5];
 
         double theta = robot.theta;
-        //Blue Servo
-        returnData[3] =length/0.5 * accList.blueStoneServo[counter]; //length of servo
-        double deltaX = -2;//distance to servo center from robot center
-        double deltaY = -6-returnData[4]; //distance to servo center from robot center, must include servo length
-        returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//servo arm X location on field
-        returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//servo arm Y location on field
-        returnData[2] = theta; //servo arm angle on field
-        //Red Servo
-        deltaX = -2;
-        returnData[7] =length/0.5 * accList.redStoneServo[counter]; //length of servo
-        deltaY = returnData[7]; //distance to servo center from robot center, must include servo length
-        returnData[4] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//servo arm X location on field
-        returnData[5] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//servo arm Y location on field
-        returnData[6] = theta; //servo arm angle on field
+        returnData[4] = 3.0; //width of WGA arm (Y)
+        returnData[3] =length * Math.cos(accList.wobbleArmAngleRad[counter]+Math.PI/4); //length of arm viewed top down (X)
+        double deltaY = -8.0;//distance to arm center from robot center
+        double deltaX = 0.0;//+returnData[3]/2.0; //distance to arm center from robot center, must include projected arm length
+        returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//wobble arm X location on field
+        returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//wobble arm Y location on field
+        returnData[2] = theta;//- Math.PI/2.0; //servo arm angle on field
 
-        return returnData;//blue x,y,theta, length, then red x,y,theta, length
+        return returnData;//x,y,theta, width, length,
+    }
+
+    /**
+     * defineAccessory determines whether each of the accessories is ON
+     * method uses the locations of the accessories on teh robot for setting the points
+     * @param robot is the set of robot Field Location points
+     * @param accList is the robot accessory list object with integer arrays for collector, conveyor, shooter
+     * @param indexAcc is the index to select for this evaluation {0 = collector, 1 = conveyor, 2 = shooter}
+     * @return
+     */
+    private double[] defineAccessory(RobotLocation robot, AccessoryList accList, int indexAcc){
+
+        double[] returnData = new double[5];//x,y,theta,width,height
+        double deltaX = 0.0;
+        double deltaY = 0.0;
+        double theta = robot.theta;
+        // COORDINATES APPEAR TO BE X forward and Y positive out right
+        switch(indexAcc){
+            case 0://collector
+                deltaX = -6.0;//distance to collector center from robot center (FWD/Back)
+                deltaY = 1.5;//distance to collector center from robot center (right/left)
+                returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//collector X location on field
+                returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//collector Y location on field
+                returnData[3] = 2.0; //height (X)
+                returnData[4] = 8.0; //width (Y)
+
+                break;
+            case 1://conveyor
+                deltaX = -2.0;//distance to conveyor center from robot center (FWD/Back)
+                deltaY = -6/4;//distance to conveyor center from robot center (right/left)
+                returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//conveyor X location on field
+                returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//conveyorY location on field
+                returnData[3]  = 8.0; //height (X)
+                returnData[4]  = 6; //width (Y)
+
+                break;
+            case 2://shooter
+                deltaX = 9.0;//distance to shooter center from robot center (FWD/Back)
+                deltaY = 1.5;//distance to shooter center from robot center (right/left)
+                returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//shooter X location on field
+                returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//shooterY location on field
+                returnData[3]  = 4.0; //height (X)
+                returnData[4]  = 12.0; //width (Y)
+
+                break;
+        }
+
+        returnData[2] = robot.theta;
+        return returnData;//x,y,theta,width,height
+    }
+
+    /**
+     * drawAccessories draws the accessories attached to the robot on the screen
+     * @param gc is the GraphicsContext to draw to
+     * @param robot is the robot location for this loop through the code
+     * @param accList is the list of accessory (collector, conveyor, shooter, wobble goal arm) data
+     */
+    private void drawAccessories(GraphicsContext gc,RobotLocation robot, AccessoryList accList){
+        double[] robotAccData = defineAccessory(robot, accList, 0);//COLLECTOR
+        String imageFile;
+        if (accList.collectorOn[counter] == 0) {
+            imageFile = "collectorOff.png";
+        } else {
+            imageFile = "collectorOn.png";
+        }
+        DefinePoint robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0], robotAccData[1], robotAccData[2]),
+                robotAccData[3], robotAccData[4], imageFile);
+        robotAccData = defineAccessory(robot, accList, 1);//CONVEYOR
+        if (accList.conveyorOn[counter] == 0) {
+            imageFile = "conveyorOff.png";
+        } else {
+            imageFile = "conveyorOn.png";
+        }
+        robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
+                    robotAccData[3],robotAccData[4],imageFile);
+
+        robotAccData = defineAccessory(robot, accList, 2);//SHOOTER
+        if (accList.shooterOn[counter] == 0) {
+            imageFile = "shooterOff.png";
+        } else {
+            imageFile = "shooterOn.png";
+        }
+        robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
+                robotAccData[3],robotAccData[4],imageFile);
+        robotAccData = defineWGA(robot,accList);
+        robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
+                robotAccData[3],robotAccData[4],"wobbleArm.png");
     }
 
     /**
