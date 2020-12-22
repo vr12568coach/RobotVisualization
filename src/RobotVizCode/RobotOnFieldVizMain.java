@@ -234,12 +234,12 @@ public class RobotOnFieldVizMain extends Application {
                          */
                         robot1Lines.clear();
                         robot1Lines.addAll(roboRead.readLines("Robot1Path.txt"));
-//                        robot2Lines.clear();
-//                        robot2Lines.addAll(roboRead.readLines("Robot2Path.txt"));
-//                        robot3Lines.clear();
-//                        robot3Lines.addAll(roboRead.readLines("Robot3Path.txt"));
-//                        robot4Lines.clear();
-//                        robot4Lines.addAll(roboRead.readLines("Robot4Path.txt"));
+                        robot2Lines.clear();
+                        robot2Lines.addAll(roboRead.readLines("Robot2Path.txt"));
+                        robot3Lines.clear();
+                        robot3Lines.addAll(roboRead.readLines("Robot3Path.txt"));
+                        robot4Lines.clear();
+                        robot4Lines.addAll(roboRead.readLines("Robot4Path.txt"));
 
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
@@ -360,9 +360,9 @@ public class RobotOnFieldVizMain extends Application {
         double[] lineColor = {0, 0, 0};
 
         drawLines(gc, robot1Lines, lineColor);
-//        drawLines( gc, robot2Lines,lineColor);
-//        drawLines( gc, robot3Lines,lineColor);
-//        drawLines( gc, robot4Lines,lineColor);
+        drawLines( gc, robot2Lines,lineColor);
+        drawLines( gc, robot3Lines,lineColor);
+        drawLines( gc, robot4Lines,lineColor);
 
         //then draw the robot
         //Alternate robot draw option for multi-robots
@@ -465,7 +465,7 @@ public class RobotOnFieldVizMain extends Application {
 //        drawDebugPoints(gc);
         double[] colors1 = {0.3, 1.0};
         double[] colors1P = {1.0, 1.0};
-        double[] colors1N1= {1.0, 0.25};
+        double[] colors1N1= {0.5, 0.5};
         double[] colors2 = {0.4, 0.9};
         double[] colors3 = {1, 0};
         double[] colors4 = {0.9, 0.0};
