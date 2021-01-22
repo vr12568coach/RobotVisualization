@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 
 public class ReadAccessories {
-    static boolean writeOutput = true;//used for troubleshooting and printing out data
+    static boolean writeOutput = false;//used for troubleshooting and printing out data
 
     public ReadAccessories() {
 // empty constructor

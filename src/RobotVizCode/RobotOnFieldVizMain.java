@@ -369,10 +369,10 @@ public class RobotOnFieldVizMain extends Application {
 
         DefinePoint robot1Center = DrawObjects.drawImage(gc, robot1Points.get(counter), robotWidth, robotHeight, "NewRobot1.png");
         followRobot(robot1Center.x, robot1Center.y); // not sure why this is needed to run once, but only run for 1st image
-        drawAccessories(gc,robot1Points.get(counter), robot1Acc);
+        drawAccessories(gc,robot1Points.get(counter), robot1Acc, colorType.BLUE);
 
         DefinePoint robot2Center = DrawObjects.drawImage(gc, robot2Points.get(counter), robotWidth, robotHeight, "NewRobot2.png");
-        drawAccessories(gc,robot2Points.get(counter), robot2Acc);
+        drawAccessories(gc,robot2Points.get(counter), robot2Acc, colorType.BLUE);
 
 
         DefinePoint BlueWobble1Center = DrawObjects.drawImage(gc, BlueWobbleGoal1Points.get(counter), 8, 8, "blueWobbleGoal.png");
@@ -389,10 +389,10 @@ public class RobotOnFieldVizMain extends Application {
 
 
         DefinePoint robot3Center = DrawObjects.drawImage(gc, robot3Points.get(counter), robotWidth, robotHeight,"RedRobot1.png");
-        drawAccessories(gc,robot3Points.get(counter), robot3Acc);
+        drawAccessories(gc,robot3Points.get(counter), robot3Acc, colorType.RED);
 
         DefinePoint robot4Center = DrawObjects.drawImage(gc, robot4Points.get(counter), robotWidth, robotHeight,"RedRobot2.png");
-        drawAccessories(gc,robot4Points.get(counter), robot4Acc);
+        drawAccessories(gc,robot4Points.get(counter), robot4Acc, colorType.RED);
 
         DefinePoint RedWobble1Center = DrawObjects.drawImage(gc, RedWobbleGoal1Points.get(counter),8,8,"redWobbleGoal.png");
         DefinePoint RedWobble2Center = DrawObjects.drawImage(gc, RedWobbleGoal2Points.get(counter),8,8,"redWobbleGoal.png");
@@ -402,18 +402,18 @@ public class RobotOnFieldVizMain extends Application {
 //        drawDebugPoints(gc);
         double[] colors1 = {0.3, 1.0};
         double[] colors1P = {1.0, 1.0};
-        double[] colors1N1= {0.5, 0.5};
+        double[] colors1N1= {0.1, 0.5};// WAS {0.5, 0.5}
         double[] colors2 = {0.4, 0.9};
         double[] colors3 = {1, 0};
         double[] colors4 = {0.9, 0.0};
 //        robotCoordsLabel.textFillProperty().setValue(new Color(0.4,0.9,1,1));
-        DrawPoints.drawPoints(gc, counter, robot1Points,colors1);
-        DrawPoints.drawPoints(gc, counter, robot1PursuitPoints,colors1P);
-        DrawPoints.drawPoints(gc, counter, robot1NavPoints,colors1N1);
+        DrawPoints.drawPoints(gc, counter, robot1Points,colors1,5);
+        DrawPoints.drawPoints(gc, counter, robot1PursuitPoints,colors1P,5);
+        DrawPoints.drawPoints(gc, counter, robot1NavPoints,colors1N1,2.5);
 
-        DrawPoints.drawPoints(gc, counter, robot2Points,colors2);
-        DrawPoints.drawPoints(gc, counter, robot3Points,colors3);
-        DrawPoints.drawPoints(gc, counter, robot4Points,colors4);
+        DrawPoints.drawPoints(gc, counter, robot2Points,colors2,5);
+        DrawPoints.drawPoints(gc, counter, robot3Points,colors3,5);
+        DrawPoints.drawPoints(gc, counter, robot4Points,colors4,5);
 
         counter+=1;
         if(counter > (ARRAY_SIZE - 1)) {
@@ -543,27 +543,39 @@ public class RobotOnFieldVizMain extends Application {
         return returnData;//x,y,theta,width,height
     }
 
+
+    private enum colorType {BLUE, RED};
     /**
      * drawAccessories draws the accessories attached to the robot on the screen
      * @param gc is the GraphicsContext to draw to
      * @param robot is the robot location for this loop through the code
      * @param accList is the list of accessory (collector, conveyor, shooter, wobble goal arm) data
      */
-    private void drawAccessories(GraphicsContext gc,RobotLocation robot, AccessoryList accList){
+    private void drawAccessories(GraphicsContext gc,RobotLocation robot, AccessoryList accList, colorType color){
         double[] robotAccData = defineAccessory(robot, accList, 0);//COLLECTOR
         String imageFile;
         if (accList.collectorOn[counter] == 0) {
-            imageFile = "collectorOff.png";
+                imageFile = "collectorOff.png";
         } else {
-            imageFile = "collectorOn.png";
+                imageFile = "collectorOn.png";
         }
         DefinePoint robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0], robotAccData[1], robotAccData[2]),
                 robotAccData[3], robotAccData[4], imageFile);
         robotAccData = defineAccessory(robot, accList, 1);//CONVEYOR
         if (accList.conveyorOn[counter] == 0) {
-            imageFile = "conveyorOff.png";
+            if(color == colorType.BLUE){
+                imageFile = "conveyorOffBLUE.png";
+            }
+            else{
+                imageFile = "conveyorOffRED.png";
+            }
         } else {
-            imageFile = "conveyorOn.png";
+            if(color == colorType.BLUE){
+                imageFile = "conveyorOnBLUE.png";
+            }
+            else{
+                imageFile = "conveyorOnRED.png";
+            }
         }
         robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
                     robotAccData[3],robotAccData[4],imageFile);
