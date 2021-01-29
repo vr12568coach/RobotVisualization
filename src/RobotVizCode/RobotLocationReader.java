@@ -1,6 +1,7 @@
 package RobotVizCode;
 
 import java.util.ArrayList;
+/* THIS CLASS USED TO READ DATA AND WRITE TO SCREEN OUTSIDE OF JavaFX application */
 
 public class RobotLocationReader {
     private ReadRobotData roboRead;

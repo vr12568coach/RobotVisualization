@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 //import OfflineVizCode.DefinePoint;
 
-
+/* THIS CLASS RETIRED, MOVED INTO MAIN FILE */
 public class DrawObjects {
     //robot radius is half the diagonal length
     static double fieldHalfWidth = (12*12/2);//12 foot field half width in inches

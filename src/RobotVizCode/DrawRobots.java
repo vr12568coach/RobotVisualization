@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 //import OfflineVizCode.DefinePoint;
 
+/* THIS CLASS RETIRED, MOVED INTO MAIN FILE */
+
 
 public class DrawRobots {
     //robot radius is half the diagonal length

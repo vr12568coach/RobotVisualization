@@ -2,7 +2,7 @@ package RobotVizCode;
 
 
 /**
- * Screen.java
+ * FieldToScreen.java
  * This class keeps track of where the robot is
  * and provides the methods to transform real coordinates into screen coordinates
  */
