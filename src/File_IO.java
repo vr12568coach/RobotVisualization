@@ -6,15 +6,16 @@ import java.nio.file.Paths;
 
 public class File_IO {
 
-//    static String mainPathString = "/Users/karl/LocalDocuments/FTC/UltimateGoal/Code/UltimateGoalOffline/TeamCode/src/main/java/UltimateGoal_RobotTeam";
+    static String mainPathString = "/Users/karl/LocalDocuments/FTC/UltimateGoal/Code/UltimateGoalOffline/TeamCode/src/main/java/UltimateGoal_RobotTeam";
+//    static String mainPathString = "/Users/karl/LocalDocuments/FTC/UltimateGoal/Code/TestWrite";
 //    static String mainPathString = "/Users/caleb/Documents/FTC/Android Studio/UltimateGoal Offline/TeamCode/src/main/java/UltimateGoal_RobotTeam";
-    static String mainPathString = "/Users/young/Desktop/Android Studio/UltimateGoalOfflineCode/TeamCode/src/main/java/UltimateGoal_RobotTeam";
+//    static String mainPathString = "/Users/young/Desktop/Android Studio/UltimateGoalOfflineCode/TeamCode/src/main/java/UltimateGoal_RobotTeam";
     static Path mainPath = Paths.get(mainPathString);
     static String exclude = ".git";
     public Path filePath;
-//    static File directoryPath = new File("/Users/karl/LocalDocuments/FTC/UltimateGoal/Code/UltimateGoalFTCApp/TeamCode/src/main/java/UltimateGoal_RobotTeam");
+    static File directoryPath = new File("/Users/karl/LocalDocuments/FTC/UltimateGoal/Code/UltimateGoalFTCApp/TeamCode/src/main/java/UltimateGoal_RobotTeam");
 //    static File directoryPath = new File("/Users/caleb/Documents/FTC/Android Studio/UltimateGoal/TeamCode/src/main/java/UltimateGoal_RobotTeam");
-    static File directoryPath = new File("/Users/young/Desktop/Android Studio/UltimateGoal/TeamCode/src/main/java/UltimateGoal_RobotTeam");
+//    static File directoryPath = new File("/Users/young/Desktop/Android Studio/UltimateGoal/TeamCode/src/main/java/UltimateGoal_RobotTeam");
     public static void main(String args[]) throws IOException {
         //Creating a File object for directory
         //List of all files and directories

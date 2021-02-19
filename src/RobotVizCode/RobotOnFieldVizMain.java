@@ -94,7 +94,7 @@ public class RobotOnFieldVizMain extends Application {
 
     public final double FIELD_HALF_WIDTH = (12.0*12.0/2.0);//12 foot field half width in inches
     //Sets the robot image graphics size
-    public double robotWidth = 14;//inches across front to back w/o gripper since robots start front to back in X (Width)
+    public double robotWidth = 12;//inches across front to back w/o gripper since robots start front to back in X (Width)
     public double robotHeight = 16.25;//inches across wheels
 
     private enum user {KARL,CALEB, WILL};
@@ -116,7 +116,7 @@ public class RobotOnFieldVizMain extends Application {
 
         primaryStage.setTitle("Test Robot Visualization");
 
-        setDisplay(user.KARL, 0,primaryStage);//screen = 0 for single screen or 1 for dual displays
+        setDisplay(user.KARL, 1,primaryStage);//screen = 0 for single screen or 1 for dual displays
 
         //this is the group that holds everything
         rootGroup = new Group();
@@ -581,9 +581,9 @@ public class RobotOnFieldVizMain extends Application {
 
         double theta = robot.theta;
         returnData[4] = 3.0; //width of WGA arm (Y)
-        returnData[3] =length * Math.cos(accList.wobbleArmAngleRad[counter]+Math.PI/4); //length of arm viewed top down (X)
-        double deltaY = -8.0 ;//distance to arm center from robot center
-        double deltaX = -4.0 + returnData[3]/2;//+returnData[3]/2.0; //distance to arm center from robot center, must include projected arm length
+        returnData[3] =length * Math.cos(Math.PI - 0.7*accList.wobbleArmAngleRad[counter]-(30.0*Math.PI/180.0)); //length of arm viewed top down (X)
+        double deltaY = 8.0 -3.0/2.0;//distance to arm center from robot center
+        double deltaX = 3.5 + Math.abs(returnData[3]/2);//distance to arm center from robot center, must include projected arm length
         returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//wobble arm X location on field
         returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//wobble arm Y location on field
         returnData[2] = theta;//- Math.PI/2.0; //servo arm angle on field
@@ -609,7 +609,7 @@ public class RobotOnFieldVizMain extends Application {
         switch(indexAcc){
             case 0://collector
                 deltaX = -6.0;//distance to collector center from robot center (FWD/Back)
-                deltaY = 1.5;//distance to collector center from robot center (right/left)
+                deltaY = 0.0;//distance to collector center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//collector X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//collector Y location on field
                 returnData[3] = 2.0; //height (X)
@@ -618,7 +618,7 @@ public class RobotOnFieldVizMain extends Application {
                 break;
             case 1://conveyor
                 deltaX = -2.0;//distance to conveyor center from robot center (FWD/Back)
-                deltaY = -6/4;//distance to conveyor center from robot center (right/left)
+                deltaY = -6.0/4.0;//distance to conveyor center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//conveyor X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//conveyorY location on field
                 returnData[3]  = 8.0; //height (X)
@@ -627,7 +627,7 @@ public class RobotOnFieldVizMain extends Application {
                 break;
             case 2://shooter
                 deltaX = 9.0;//distance to shooter center from robot center (FWD/Back)
-                deltaY = 1.5;//distance to shooter center from robot center (right/left)
+                deltaY = 0.75;//distance to shooter center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//shooter X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//shooterY location on field
                 returnData[3]  = 4.0; //height (X)
