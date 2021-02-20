@@ -569,21 +569,21 @@ public class RobotOnFieldVizMain extends Application {
     }
 
 
-    /** This will calculate the wobbleGoalArm graphics size and position based on the WGA angle accessory data
+    /** This will calculate the wobbleGoalArm graphics size and position based on the WGA angle accessory dataX
      *
      * @param robot is a robot field location point (x, y, theta)
      * @param accList is a robot accessories list - shooter, conveyor, collector, and WGA angle info
      * @return
      */
     private double[] defineWGA(RobotLocation robot, AccessoryList accList){
-        double length = 12.0;
+        double length = 12.5;
         double[] returnData = new double[5];
 
         double theta = robot.theta;
         returnData[4] = 3.0; //width of WGA arm (Y)
-        returnData[3] =length * Math.cos(Math.PI - 0.7*accList.wobbleArmAngleRad[counter]-(30.0*Math.PI/180.0)); //length of arm viewed top down (X)
-        double deltaY = 8.0 -3.0/2.0;//distance to arm center from robot center
-        double deltaX = 3.5 + Math.abs(returnData[3]/2);//distance to arm center from robot center, must include projected arm length
+        returnData[3] =length * Math.cos(Math.PI - accList.wobbleArmAngleRad[counter]-(30.0*Math.PI/180.0)); //length of arm viewed top down (X)
+        double deltaY = 8.0 -3.0;//distance to arm center from robot center
+        double deltaX = 3.5 + Math.abs(returnData[3]/2.0);//distance to arm center from robot center, must include projected arm length
         returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//wobble arm X location on field
         returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//wobble arm Y location on field
         returnData[2] = theta;//- Math.PI/2.0; //servo arm angle on field
@@ -608,25 +608,25 @@ public class RobotOnFieldVizMain extends Application {
         // COORDINATES APPEAR TO BE X forward and Y positive out right
         switch(indexAcc){
             case 0://collector
-                deltaX = -6.0;//distance to collector center from robot center (FWD/Back)
+                deltaX = -8.0;//distance to collector center from robot center (FWD/Back)
                 deltaY = 0.0;//distance to collector center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//collector X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//collector Y location on field
-                returnData[3] = 2.0; //height (X)
+                returnData[3] = 4.0; //height (X)
                 returnData[4] = 8.0; //width (Y)
 
                 break;
             case 1://conveyor
-                deltaX = -2.0;//distance to conveyor center from robot center (FWD/Back)
-                deltaY = -6.0/4.0;//distance to conveyor center from robot center (right/left)
+                deltaX = -4.0;//distance to conveyor center from robot center (FWD/Back)
+                deltaY = -2.0;//distance to conveyor center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//conveyor X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//conveyorY location on field
-                returnData[3]  = 8.0; //height (X)
+                returnData[3]  = 10.0; //height (X)
                 returnData[4]  = 6; //width (Y)
 
                 break;
             case 2://shooter
-                deltaX = 9.0;//distance to shooter center from robot center (FWD/Back)
+                deltaX = 7.0;//distance to shooter center from robot center (FWD/Back)
                 deltaY = 0.75;//distance to shooter center from robot center (right/left)
                 returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//shooter X location on field
                 returnData[1] = robot.y + deltaX*Math.sin(theta) + deltaY*Math.cos(theta);//shooterY location on field

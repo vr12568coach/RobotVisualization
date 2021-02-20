@@ -224,7 +224,7 @@ public class File_IO {
                 output ="            shooterLeft = new DcMotor();shooterRight = new DcMotor();shooterLeft.timeStep = om.timeStep;shooterRight.timeStep = om.timeStep;//NEEDED FOR OFFLINE";
                 break;
             case "//            wobbleGoalServo = new Servo();wobbleGoalArm = new DcMotor();wobbleGoalArm.timeStep = om.timeStep * (0.5);//NEEDED FOR OFFLINE":// WOBBLE GOAL ARM
-                output ="            wobbleGoalServo = new Servo();wobbleGoalArm = new DcMotor();wobbleGoalArm.timeStep = om.timeStep * (0.2);//NEEDED FOR OFFLINE";
+                output ="            wobbleGoalServo = new Servo();wobbleGoalArm = new DcMotor();wobbleGoalArm.timeStep = om.timeStep * (0.5);//NEEDED FOR OFFLINE";
                 break;
             default:
                 output = input;//is this needed for items that don't meet cases?
