@@ -10,4 +10,7 @@ public class AccessoryList {
     public  AccessoryList(){
 
     }
+    /* NOTE: could make this just an Accessory w/o the arrays
+    *   Then the ArrayList can be made when reading the file
+    *   Would solve the issue of defining the size*/
 }

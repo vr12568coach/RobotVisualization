@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import RobotVizCode.ReadRobotData;
+import RobotVizCode.AccessoryData;
 
 public class RobotOnFieldVizMain extends Application {
     //this is the ImageView that will hold the field background
@@ -42,9 +44,9 @@ public class RobotOnFieldVizMain extends Application {
     private final int MAIN_GRID_VERTICAL_GAP = 100;//vertical spacing of the main grid
     ///////////////////////////////////////////////////////////////////
 
-    RobotVizCode.ReadRobotData roboRead = new RobotVizCode.ReadRobotData();
+    ReadRobotData roboRead = new ReadRobotData();
 
-    public static int ARRAY_SIZE = 300;
+//    public static int ARRAY_SIZE = 300;//Used for resetting the counter, not array size -- lists are flexible - replaced with MetaData
 
     public static ArrayList<RobotVizCode.RobotLocation> robot1Points = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> robot2Points = new ArrayList<>();//all the points to display
@@ -68,15 +70,22 @@ public class RobotOnFieldVizMain extends Application {
     public static ArrayList<RobotVizCode.RobotLocation> RedWobbleGoal2Points = new ArrayList<>();//all the points to display
     public static ArrayList<RobotVizCode.RobotLocation> RedWobbleGoal1Points = new ArrayList<>();//all the points to display
 
-    public static AccessoryList robot1Acc = new AccessoryList();
-    public static AccessoryList robot2Acc = new AccessoryList();
-    public static AccessoryList robot3Acc = new AccessoryList();
-    public static AccessoryList robot4Acc = new AccessoryList();
+//    public static AccessoryList robot1Acc = new AccessoryList();// size of Accessorylist array size is defined within class,
+//    public static AccessoryList robot2Acc = new AccessoryList();// AccessoryList array size or approach needs to change for variable size inputs
+//    public static AccessoryList robot3Acc = new AccessoryList();
+//    public static AccessoryList robot4Acc = new AccessoryList();
+
+    public static ArrayList<AccessoryData>  robot1Acc = new ArrayList<>();//Changed to ArrayList of AccessoryData - size is variable
+    public static ArrayList<AccessoryData>  robot2Acc = new ArrayList<>();
+    public static ArrayList<AccessoryData>  robot3Acc = new ArrayList<>();
+    public static ArrayList<AccessoryData>  robot4Acc = new ArrayList<>();
 
     public static ArrayList<RobotVizCode.DefineLine> robot1Lines = new ArrayList<>();//all the lines to display
     public static ArrayList<RobotVizCode.DefineLine> robot2Lines = new ArrayList<>();//all the lines to display
     public static ArrayList<RobotVizCode.DefineLine> robot3Lines = new ArrayList<>();//all the lines to display
     public static ArrayList<RobotVizCode.DefineLine> robot4Lines = new ArrayList<>();//all the lines to display
+
+    public static MetaData OfflineMetaData = new MetaData(300, 10);//Create the MetaData class to read and store data with defaults
 
     public static String ringSetString = "none";
 
@@ -111,7 +120,6 @@ public class RobotOnFieldVizMain extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-//    public void start(JFrame frame, Stage primaryStage) throws Exception {
         //WINDOW STUFF//
 
         primaryStage.setTitle("Test Robot Visualization");
@@ -143,20 +151,12 @@ public class RobotOnFieldVizMain extends Application {
         //Setup the canvas//
 
 
-        fieldCanvas = new Canvas(stageWidth,stageHeight);// set to teh user input width
+        fieldCanvas = new Canvas(stageWidth,stageHeight);// set to the user input width
 
         //the GraphicsContext is what we use to draw on the fieldCanvas
         GraphicsContext gc = fieldCanvas.getGraphicsContext2D();
 
-        rootGroup.getChildren().add(fieldCanvas);//add the canvas
-        ////////////////////
-
-        /**
-         * We will use a vbox and set it's width to create a spacer in the window
-         * USE THIS TO CHANGE THE SPACING (KS: not sure what this really does)
-         */
-//        VBox debuggingHSpacer = new VBox();
-//        mainHBox.getChildren().add(debuggingHSpacer);
+        rootGroup.getChildren().add(fieldCanvas);//add the canvas to the root group
 
         //Create the robot coordinates log display
         Group logGroup = new Group();
@@ -179,7 +179,7 @@ public class RobotOnFieldVizMain extends Application {
         //add the background image
         logGroup.getChildren().add(logImageView);
 
-        //Create the labels and test output for the robot coordinates
+        //Create the labels and text output for the robot coordinates
         Label robotCoordsLabel = new Label();
         robotCoordsLabel.setFont(new Font("Arial",12* stageHeight / standardHeightPixels));
         robotCoordsLabel.textFillProperty().setValue(new Color(0,0.2,1.0,1));
@@ -213,10 +213,14 @@ public class RobotOnFieldVizMain extends Application {
             @Override public void handle(long currentNanoTime) {
                 try {
                     //Load data on initial pass
-                    if(counter == 0) {
+                    if(counter == 0) {//when ever counter is reset then data is re-read and the visualization process repeats
                         /**should look to make a method to simplify and reduce the lines of code
                          *
                          */
+                        OfflineMetaData.readDataFile("RunMetaData.txt");
+                        System.out.println(String.format("MetaData: \n\t\tNumber of Points: %d\n\t\tPoints/Second: %d",OfflineMetaData.numberPoints,OfflineMetaData.pointsPerSecond));
+                        System.out.println(String.format("\t\tEnd Time: %.2f",(double)OfflineMetaData.numberPoints/(double)OfflineMetaData.pointsPerSecond));
+
                         robot1Lines.clear();
                         robot1Lines.addAll(roboRead.readLines("Robot1Path.txt"));
                         robot2Lines.clear();
@@ -228,9 +232,7 @@ public class RobotOnFieldVizMain extends Application {
 
                         robot1Points.clear();
                         robot1Points.addAll(roboRead.readData("Robot1OnField.txt"));
-                        robot1Acc = ReadAccessories.readAcc("Robot1Accessories.txt");
-//                        robot1Gripper.clear();
-//                        robot1Gripper.addAll(roboRead.readData("Robot1Gripper.txt"));
+                        robot1Acc = roboRead.readAccData("Robot1Accessories.txt");
                         robot1PursuitPoints.clear();
                         robot1PursuitPoints.addAll(roboRead.readData("Robot1Pursuit.txt"));
                         robot1NavPoints.clear();
@@ -240,7 +242,7 @@ public class RobotOnFieldVizMain extends Application {
                         robot2Points.addAll(roboRead.readData("Robot2OnField.txt"));
                         robot2PursuitPoints.clear();
                         robot2PursuitPoints.addAll(roboRead.readData("Robot2Pursuit.txt"));
-                        robot2Acc = ReadAccessories.readAcc("Robot2Accessories.txt");
+                        robot2Acc = roboRead.readAccData("Robot2Accessories.txt");
                         robot2NavPoints.clear();
                         robot2NavPoints.addAll(roboRead.readData("Robot2Nav.txt"));
 
@@ -248,7 +250,7 @@ public class RobotOnFieldVizMain extends Application {
                         robot3Points.addAll(roboRead.readData("Robot3OnField.txt"));
                         robot3PursuitPoints.clear();
                         robot3PursuitPoints.addAll(roboRead.readData("Robot3Pursuit.txt"));
-                        robot3Acc = ReadAccessories.readAcc("Robot3Accessories.txt");
+                        robot3Acc = roboRead.readAccData("Robot3Accessories.txt");
                         robot3NavPoints.clear();
                         robot3NavPoints.addAll(roboRead.readData("Robot3Nav.txt"));
 
@@ -256,7 +258,7 @@ public class RobotOnFieldVizMain extends Application {
                         robot4Points.addAll(roboRead.readData("Robot4OnField.txt"));
                         robot4PursuitPoints.clear();
                         robot4PursuitPoints.addAll(roboRead.readData("Robot4Pursuit.txt"));
-                        robot4Acc = ReadAccessories.readAcc("Robot4Accessories.txt");
+                        robot4Acc = roboRead.readAccData("Robot4Accessories.txt");
                         robot4NavPoints.clear();
                         robot4NavPoints.addAll(roboRead.readData("Robot4Nav.txt"));
 
@@ -319,12 +321,12 @@ public class RobotOnFieldVizMain extends Application {
                             String.format("\nX3: %.2f  |  X4: %.2f", robot3Points.get(counter).x,robot4Points.get(counter).x)+
                             String.format("\nY3: %.2f  |  Y4: %.2f", robot3Points.get(counter).y,robot4Points.get(counter).y) +
                             String.format("\nAng3:%.1f°  |  Ang4:%.1f°",Math.toDegrees(robot3Points.get(counter).theta),Math.toDegrees(robot4Points.get(counter).theta)) +
-                            String.format("\nElapsed Time: %.1f",(double)counter/10.0));
-//************ UPDATES FOR WINDOW SIZING OUTPUT ************************************
-                    System.out.println(String.format("Stage Input W: %.1f, H: %.1f & Current W: %.1f, H: %.1f,",stageWidth,stageHeight,primaryStage.getWidth(),primaryStage.getHeight()));
-                    System.out.println(String.format(" > Current Scene Width: %.1f, Height: %.1f",scene.getWidth(),scene.getHeight()));
-                    System.out.println(String.format(" > fieldCanvas Width: %.1f, Height: %.1f",fieldCanvas.getWidth(),fieldCanvas.getHeight()));
-                    System.out.println(String.format(" > fieldBackgroundImageView Width: %.1f, Height: %.1f",fieldBackgroundImageView.getFitWidth(),fieldBackgroundImageView.getFitHeight()));
+                            String.format("\nElapsed Time: %.2f",(double)counter/(double)OfflineMetaData.pointsPerSecond));
+//************ UPDATES FOR WINDOW SIZING OUTPUT (trouble shooting only)************************************
+//                    System.out.println(String.format("Stage Input W: %.1f, H: %.1f & Current W: %.1f, H: %.1f,",stageWidth,stageHeight,primaryStage.getWidth(),primaryStage.getHeight()));
+//                    System.out.println(String.format(" > Current Scene Width: %.1f, Height: %.1f",scene.getWidth(),scene.getHeight()));
+//                    System.out.println(String.format(" > fieldCanvas Width: %.1f, Height: %.1f",fieldCanvas.getWidth(),fieldCanvas.getHeight()));
+//                    System.out.println(String.format(" > fieldBackgroundImageView Width: %.1f, Height: %.1f",fieldBackgroundImageView.getFitWidth(),fieldBackgroundImageView.getFitHeight()));
 //************ UPDATES FOR WINDOW SIZING OUTPUT ************************************
 
                 }
@@ -352,7 +354,7 @@ public class RobotOnFieldVizMain extends Application {
         double[] lineRed = {1, 0, 0};
         double[] lineBlue = {0, 0, 1};
 
-        drawLines(gc, robot1Lines, lineBlack,0);//no dashses
+        drawLines(gc, robot1Lines, lineBlack,0);//no dashes
         drawLines(gc, robot2Lines,lineBlue,10);//dashes
         drawLines(gc, robot3Lines,lineBlack,0);
         drawLines(gc, robot4Lines,lineRed,10);
@@ -362,10 +364,10 @@ public class RobotOnFieldVizMain extends Application {
 
         DefinePoint robot1Center = drawImage(gc, robot1Points.get(counter), robotWidth, robotHeight, "NewRobot1.png");
         setScreenCenter(robot1Center.x, robot1Center.y); // sets screen center for field, only run for 1st image
-        drawAccessories(gc,robot1Points.get(counter), robot1Acc, colorType.BLUE);
+        drawAccessories(gc,robot1Points.get(counter), robot1Acc.get(counter), colorType.BLUE);
 
         drawImage(gc, robot2Points.get(counter), robotWidth, robotHeight, "NewRobot2.png");
-        drawAccessories(gc,robot2Points.get(counter), robot2Acc, colorType.BLUE);
+        drawAccessories(gc,robot2Points.get(counter), robot2Acc.get(counter), colorType.BLUE);
 
 
         drawImage(gc, BlueWobbleGoal1Points.get(counter), 8, 8, "blueWobbleGoal.png");
@@ -382,10 +384,10 @@ public class RobotOnFieldVizMain extends Application {
 
 
         drawImage(gc, robot3Points.get(counter), robotWidth, robotHeight,"RedRobot1.png");
-        drawAccessories(gc,robot3Points.get(counter), robot3Acc, colorType.RED);
+        drawAccessories(gc,robot3Points.get(counter), robot3Acc.get(counter), colorType.RED);
 
         drawImage(gc, robot4Points.get(counter), robotWidth, robotHeight,"RedRobot2.png");
-        drawAccessories(gc,robot4Points.get(counter), robot4Acc, colorType.RED);
+        drawAccessories(gc,robot4Points.get(counter), robot4Acc.get(counter), colorType.RED);
 
         drawImage(gc, RedWobbleGoal1Points.get(counter),8,8,"redWobbleGoal.png");
         drawImage(gc, RedWobbleGoal2Points.get(counter),8,8,"redWobbleGoal.png");
@@ -423,7 +425,7 @@ public class RobotOnFieldVizMain extends Application {
         drawPoints(gc, counter, robot4NavPoints,colorRedNav,2.5,true);
 
         counter+=1;
-        if(counter > (ARRAY_SIZE - 1)) {
+        if(counter > (OfflineMetaData.numberPoints - 1)) {//Counter is reset if it exceeds maximum size for Arrays/Lists from MetaData
             counter = 0;
         }
 
@@ -572,16 +574,16 @@ public class RobotOnFieldVizMain extends Application {
     /** This will calculate the wobbleGoalArm graphics size and position based on the WGA angle accessory dataX
      *
      * @param robot is a robot field location point (x, y, theta)
-     * @param accList is a robot accessories list - shooter, conveyor, collector, and WGA angle info
+     * @param armAngleRad is the WGA angle in radians as read from the accessoryList or Data
      * @return
      */
-    private double[] defineWGA(RobotLocation robot, AccessoryList accList){
+    private double[] defineWGA(RobotLocation robot, double armAngleRad){
         double length = 12.5;
         double[] returnData = new double[5];
 
         double theta = robot.theta;
         returnData[4] = 3.0; //width of WGA arm (Y)
-        returnData[3] =length * Math.cos(Math.PI - accList.wobbleArmAngleRad[counter]-(30.0*Math.PI/180.0)); //length of arm viewed top down (X)
+        returnData[3] =length * Math.cos(Math.PI - armAngleRad-(30.0*Math.PI/180.0)); //length of arm viewed top down (X)
         double deltaY = 8.0 -3.0;//distance to arm center from robot center
         double deltaX = 3.5 + Math.abs(returnData[3]/2.0);//distance to arm center from robot center, must include projected arm length
         returnData[0] = robot.x + deltaX*Math.cos(theta) - deltaY*Math.sin(theta);//wobble arm X location on field
@@ -595,11 +597,10 @@ public class RobotOnFieldVizMain extends Application {
      * defineAccessory determines whether each of the accessories is ON
      * method uses the locations of the accessories on teh robot for setting the points
      * @param robot is the set of robot Field Location points
-     * @param accList is the robot accessory list object with integer arrays for collector, conveyor, shooter
      * @param indexAcc is the index to select for this evaluation {0 = collector, 1 = conveyor, 2 = shooter}
      * @return
      */
-    private double[] defineAccessory(RobotLocation robot, AccessoryList accList, int indexAcc){
+    private double[] defineAccessory(RobotLocation robot, int indexAcc){
 
         double[] returnData = new double[5];//x,y,theta,width,height
         double deltaX = 0.0;
@@ -646,20 +647,16 @@ public class RobotOnFieldVizMain extends Application {
      * drawAccessories draws the accessories attached to the robot on the screen
      * @param gc is the GraphicsContext to draw to
      * @param robot is the robot location for this loop through the code
-     * @param accList is the list of accessory (collector, conveyor, shooter, wobble goal arm) data
+     * @param accData is the list of accessory (collector, conveyor, shooter, wobble goal arm) data
      */
-    private void drawAccessories(GraphicsContext gc,RobotLocation robot, AccessoryList accList, colorType color){
-        double[] robotAccData = defineAccessory(robot, accList, 0);//COLLECTOR
-        String imageFile;
-        if (accList.collectorOn[counter] == 0) {
-                imageFile = "collectorOff.png";
-        } else {
-                imageFile = "collectorOn.png";
-        }
-        DefinePoint robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0], robotAccData[1], robotAccData[2]),
-                robotAccData[3], robotAccData[4], imageFile);
-        robotAccData = defineAccessory(robot, accList, 1);//CONVEYOR
-        if (accList.conveyorOn[counter] == 0) {
+    private void drawAccessories(GraphicsContext gc,RobotLocation robot, AccessoryData accData, colorType color){
+        String imageFile;//Create string to be completed later with image names
+        double[] robotAccData;//Create null robot Accessory data
+        DefinePoint robotAcc;//Create null DefinePoint to be used for drawing accessory
+
+        //Define the CONVEYOR location on field and image size & orientation based on robot position
+        robotAccData = defineAccessory(robot,  1);//CONVEYOR/
+        if (accData.conveyorOn == 0) {
             if(color == colorType.BLUE){
                 imageFile = "conveyorOffBLUE.png";
             }
@@ -674,18 +671,37 @@ public class RobotOnFieldVizMain extends Application {
                 imageFile = "conveyorOnRED.png";
             }
         }
+        // Draw the CONVEYOR on the screen using robotAccData for location, size, and orientation and the image file
         robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
                     robotAccData[3],robotAccData[4],imageFile);
 
-        robotAccData = defineAccessory(robot, accList, 2);//SHOOTER
-        if (accList.shooterOn[counter] == 0) {
+        //Define the COLLECTOR location on field and image size & orientation based on robot position
+        robotAccData = defineAccessory(robot, 0);//COLLECTOR
+        //Define the image file to use for the COLLECTOR based on accData ON/OFF data
+        if (accData.collectorOn == 0) {
+            imageFile = "collectorOff.png";
+        } else {
+            imageFile = "collectorOn.png";
+        }
+        //Draw the COLLECTOR on the screen using robotAccData for location, size, and orientation and the image file
+        robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0], robotAccData[1], robotAccData[2]),
+                robotAccData[3], robotAccData[4], imageFile);
+
+        //Define the image file to use for the CONVEYOR based on accData ON/OFF data
+        //Define the SHOOTER location on field and image size & orientation based on robot position
+        robotAccData = defineAccessory(robot, 2);//SHOOTER
+        //Define the image file to use for the SHOOTER based on accData ON/OFF data
+        if (accData.shooterOn == 0) {
             imageFile = "shooterOff.png";
         } else {
             imageFile = "shooterOn.png";
         }
+        //Draw the SHOOTER on the screen using robotAccData for location, size, and orientation and the image file
         robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
                 robotAccData[3],robotAccData[4],imageFile);
-        robotAccData = defineWGA(robot,accList);
+        //Define the Wobble Goal Arm (WGA) location on field and image size & orientation based on robot position
+        robotAccData = defineWGA(robot,accData.wobbleArmAngleRad);
+        //Draw the WGA on the screen using robotAccData for location, size, and orientation and the fixed image file
         robotAcc = DrawObjects.drawImage(gc, new RobotLocation(robotAccData[0],robotAccData[1],robotAccData[2]),
                 robotAccData[3],robotAccData[4],"wobbleArm.png");
     }
